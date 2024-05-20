@@ -4,6 +4,8 @@ import Home from './pages/home';
 import Dashboard from './pages/dashboard';
 import './App.css';
 
+// all this needs edits
+
 const LogIn = () => {
     return (
         <Routes>
