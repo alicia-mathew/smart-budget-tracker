@@ -1,29 +1,36 @@
-import React, { useEffect, useState } from 'react';
-import logo from './logo.svg';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Home from './pages/home';
+import Dashboard from './pages/dashboard';
 import './App.css';
 
+const LogIn = () => {
+    return (
+        <Routes>
+            <Route path='/' element={<Home />} />
+        </Routes>
+    );
+};
+
+const Main = () => {
+    return (
+	<Routes>
+	    <Route path='/dashboard' element={<Dashboard />} />
+	</Routes>
+    );
+};
+
 function App() {
-  return (
-    <div className="App">
-      <header className="header">
-        <h1>Budget Tracker</h1>
-        <button className="account-button">
-          <span className="account-icon">⚪</span> Account
-        </button>
-      </header>
-      <div className="content">
-        <div className="section">
-          <h2>Monthly</h2>
+    return (
+        <div className='App'>
+            <Router>
+                <LogIn />
+            </Router>
+	    <Router>
+		<Main />
+	    </Router>
         </div>
-        <div className="section">
-          <h2>Yearly</h2>
-        </div>
-        <div className="section">
-          <h2>Expenditure by Card</h2>
-        </div>
-      </div>
-    </div>
-  );
+    );
 }
 
 export default App;

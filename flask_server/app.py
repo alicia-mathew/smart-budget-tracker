@@ -5,11 +5,6 @@ import os
 app = Flask(__name__, static_folder='../react_frontend/db-app/build')
 
 
-@app.route('/api/test', methods=['GET'])
-def test():
-    return jsonify(message="testing")
-
-
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve_react_app(path):
