@@ -14,15 +14,3 @@
 7. Recurring Payment Detection: A tool that identifies patterns in recurring payments, helping users track and manage regular expenditures.
 8. Group Enrollment: A feature that allows users to join group accounts to create and manage a collective budget.
 9. Group Management and Overview: A tool for group accounts where each member's expenses can be individually tracked, aggregated, and visualized, providing a comprehensive view of the group’s financial status.
-
-
-
-
-**Features ideas for app**: 
-1) Expense overview page where users can see a summary of their expenditures and savings over different time frames (weekly, monthly, every 6 months, yearly, etc.
-2) Expense trends: create a tool that analyzes trends in user spending/saving to display what days or around what times users tend to overspend/underspend etc.
-3) Expense management (smart recommendations): a tool that can help users reallocate finances being underspent in certain categories to other categories.
-4) Expense aggregation: page/tool to graphically display to users how much they spend on different items (pie charts, line charts comparing their spending goals to their actual spending)
-5) Recurring payment detection: a tool to find any patterns in common expenditures (any recurring payments that follow a fixed period interval)
-6) Group enrollment: allow users to be added to a group account to create a group budget
-7) Group management and overview: allow users in a group account to track each other's expenses where each user's spending can individually be tracked, aggregated, and visualized as well.
