@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './pages/home';
 import Dashboard from './pages/dashboard';
+import LogBudget from './pages/logbudgets';
 import './App.css';
 
 // all this needs edits
@@ -22,6 +23,15 @@ const Main = () => {
     );
 };
 
+const Budget = () => {
+    return (
+	<Routes>
+	    <Route path='/logbudgets' element={<LogBudget />} />
+	</Routes>
+    );
+};
+
+
 function App() {
     return (
         <div className='App'>
@@ -30,6 +40,9 @@ function App() {
             </Router>
 	    <Router>
 		<Main />
+	    </Router>
+	    <Router>
+		<Budget />
 	    </Router>
         </div>
     );

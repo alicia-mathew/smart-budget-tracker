@@ -27,13 +27,18 @@ function Dashboard() {
 	    </header>
 	    <div className="content">
 		<div className="section">
-		    <h2>Monthly</h2>
+		    <h2>Log Budget Goals</h2>
+		    <p1>Log and split expenditure budget into categories</p1>
 		</div>
 		<div className="section">
-		    <h2>Yearly</h2>
+		    <h2>Expense Management</h2>
+		    <p1>Log your Expenses and compare them alongside your allotted budgeting</p1>
 		</div>
 		<div className="section">
-		    <h2>Expenditure by Card</h2>
+		    <h2>Trends</h2>
+		</div>
+		<div className="section">
+		    <h2>Smart Recommendations</h2>
 		</div>
 	    </div>
 	</div>
