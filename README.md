@@ -14,3 +14,24 @@
 7. Recurring Payment Detection: A tool that identifies patterns in recurring payments, helping users track and manage regular expenditures.
 8. Group Enrollment: A feature that allows users to join group accounts to create and manage a collective budget.
 9. Group Management and Overview: A tool for group accounts where each member's expenses can be individually tracked, aggregated, and visualized, providing a comprehensive view of the group’s financial status.
+
+
+**Database Info**
+Our database is created with SQLite3 as written in `milestone1_db_generation.py`. To create the database, run:
+`python3 milestone1_db_generation.py`
+This will create a .db file in the local directory containing our sample dataset.
+
+Once created, we can load the .db file using SQLite3 in Python:
+```
+# connect to the database
+import sqlite3
+conn = sqlite3.connect("your_db.db")
+
+# fetch rows from a table
+c = conn.cursor()
+c.execute("""SELECT * FROM expenses""")
+result = c.fetchall()
+print(result)
+```
+
+Sample queries for the application features can be found in `sample_queries.py`, and the query outputs in `sample_outputs.txt`

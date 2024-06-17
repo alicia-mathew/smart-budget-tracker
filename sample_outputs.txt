@@ -1,0 +1,11 @@
+# Expense Management Add Record
+N/A
+
+# Expense Management Delete Record
+N/A
+
+# Expense Management Edit Record
+N/A
+
+# Expense Management List Records
+[('Exp1', 10.0, 'Food', '12-06-23', 3, 'ate at McD')]
