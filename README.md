@@ -16,7 +16,8 @@
 9. Group Management and Overview: A tool for group accounts where each member's expenses can be individually tracked, aggregated, and visualized, providing a comprehensive view of the group’s financial status.
 
 
-**Database Info**:
+**Database Info**
+<br />
 Our database is created with SQLite3 as written in `milestone1_db_generation.py`. To create the database, run:
 `python3 milestone1_db_generation.py`
 This will create a .db file in the local directory containing our sample dataset.
