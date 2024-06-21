@@ -78,8 +78,6 @@ c.execute(""" CREATE TABLE frequent_expense (
           FOREIGN KEY (user_id) REFERENCES individual (user_id))
           """)
         
-
-
 # Populating DataBase
 names = ['Aminah', 'Govind', 'Evan', 'Dhruv', 'Aly', 'Group3']
 ids = [1, 2, 3, 4, 5, 6]
@@ -127,7 +125,6 @@ for i in range(3):
               VALUES ('{exp_ids[i]}', {10+i}, '{cat[i]}', '{dates[i]}', {ids[i+2]}, '{desc[i]}')
               """)
 
-
 c.execute(f""" INSERT INTO spending_goal (spending_id, amount, category, date_created, user_id, end_date, start_date)
           VALUES ('SG1', 500, 'Food', '13-06-24', '{ids[0]}', '30-06-24', '01-06-24')
           """)
@@ -143,8 +140,6 @@ c.execute(f""" INSERT INTO spending_goal (spending_id, amount, category, date_cr
 c.execute(f""" INSERT INTO frequent_expense (freq_exp_id, user_id, amount, category, description)
           VALUES ('FE1', '{ids[1]}', 5, 'Food', 'Milk')
           """)
-
-
 
 conn.commit()
 conn.close()

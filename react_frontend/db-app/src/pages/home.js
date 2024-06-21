@@ -10,7 +10,7 @@ function Home() {
 
     const routeDashboard = async () => {
         try {
-            const response = await axios.post('/api/authenticate', { email, password });
+            const response = await axios.post('http://127.0.0.1:5000/api/auth', { email, password });
             if (response.data.status === "success") {
                 const user = response.data.user;
                 localStorage.setItem('user', JSON.stringify(user));  // Save user details in localStorage

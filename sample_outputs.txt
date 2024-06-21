@@ -9,3 +9,11 @@ N/A
 
 # Expense Management List Records
 [('Exp1', 10.0, 'Food', '12-06-23', 3, 'ate at McD')]
+
+# Trends Expenditure vs Allotted Budget Monthly Comparison
+[('Groceries', 250, 300), ('Miscellaneous', 125, 200), ('Food', 250, 150),
+ ('Rent', 900, 900), ('Clothes', 250, 150)]
+
+# Trends Monthly Expenditure
+[('06', 'Clothes', 75), ('06', 'Food', 250), ('06', 'Groceries', 250),
+ ('06', 'Rent', 900), ('06', 'Miscellaneous', 125)]
