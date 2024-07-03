@@ -15,6 +15,7 @@ function Home() {
                 const user = response.data.user;
                 localStorage.setItem('user', JSON.stringify(user));  // Save user details in localStorage
                 navigate('/dashboard');
+		navigate(0);
             } else {
                 alert('Invalid login credentials. Please try again.');
             }

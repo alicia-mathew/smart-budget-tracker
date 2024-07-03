@@ -11,6 +11,23 @@ app.use(bodyParser.json());
 // Initialize SQLite database
 const db = new sqlite3.Database('milestone1.db');
 
+// Endpoint to get username
+app.get('/api/username', (req, res) => {
+    const user_id = req.body;
+    console.log(user_id);
+
+    db.all('SELECT name FROM user WHERE user_id = ?', [user_id], (err, rows) => {
+	if (err) {
+	    console.log("error reached");
+	    console.error(err.message);
+	    res.status(400).json({ error: err.message });
+	    return;
+	}
+	console.log(rows);
+	res.json(rows);
+    });
+});
+
 // Endpoint to fetch expenses
 app.get('/api/expenses', (req, res) => {
     const user_id = req.body;

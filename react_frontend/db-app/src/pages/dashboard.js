@@ -1,232 +1,79 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './dashboard.css';
+import { wait } from '@testing-library/user-event/dist/utils';
 
 function Dashboard() {
-    const categories = ["Rent", "Groceries", "Clothes", "Food", "Other"];
-    const [expenses, setExpenses] = useState([]);
-    const [editingExpense, setEditingExpense] = useState(null);
-    const [editedExpense, setEditedExpense] = useState({
-        description: '',
-        amount: '',
-        category: '',
-        date: ''
-    });
+    const navigate = useNavigate();
+    // useState checks if the button has been clicked (in this case)
+    const [dropdownVisible, setDropdownVisible] = useState(false);
+    const [username, setUsername] = useState('')
+
     const user = JSON.parse(localStorage.getItem('user'));
 
     useEffect(() => {
-        fetchExpenses();
+	fetchUser();
     }, []);
 
-    const fetchExpenses = async () => {
-        try {
-            const userid = user.ind_id
-            console.log(userid)
-            const response = await axios.get(`http://127.0.0.1:5000/api/expenses?user_id=${userid}`);
-            setExpenses(response.data);
-        } catch (error) {
-            console.error('There was an error fetching the expenses!', error);
-        }
+    const fetchUser = async() => {
+	try {
+	    const user_id = user.ind_id
+	    console.log(user_id);
+	    const response = await axios.get(`http://127.0.0.1:5000/api/username?user_id=${user_id}`);
+	    console.log(response.data);
+	    setUsername(response.data);
+	} catch (error) {
+	    console.log("there was an error in fetching", error);
+	}
     };
 
-    const addExpense = async (event) => {
-        event.preventDefault();
-
-        const desc = document.getElementById("expenseFormDescription").value;
-        const amt = document.getElementById("expenseFormAmount").value;
-        const cat = document.getElementById("expenseFormCategory").value;
-        const date = document.getElementById("expenseFormDate").value;
-
-        const newExpense = {
-            description: desc,
-            amount: parseFloat(amt),
-            category: cat,
-            date: date,
-            user_id: user.ind_id  // Use the logged-in user's ID
-        };
-
-        console.log("Sending new expense:", newExpense);
-
-        try {
-            const response = await axios.post('http://127.0.0.1:5000/api/expenses', newExpense);
-            console.log("Response from server:", response.data);
-            setExpenses(prevExpenses => [...prevExpenses, response.data]);
-            console.log("Updated expenses state:", expenses);
-            document.getElementById("expenseForm").reset();
-        } catch (error) {
-            console.error('There was an error adding the expense!', error);
-        }
+    const toggleDropdown = () => {
+	setDropdownVisible(!dropdownVisible);
     };
 
-    const deleteExpense = async (expense_id) => {
-        try {
-            const response = await axios.delete(`http://127.0.0.1:5000/api/expenses/${expense_id}`);
-            if (response.data.status === 'success') {
-                setExpenses(prevExpenses => prevExpenses.filter(expense => expense.expense_id !== expense_id));
-            }
-        } catch (error) {
-            console.error('There was an error deleting the expense!', error);
-        }
+    
+
+    const routePage = (page) => {
+	navigate(page);
+	navigate(0)
     };
-
-    const editExpense = (expense) => {
-        setEditingExpense(expense.expense_id);
-        setEditedExpense({ ...expense });
-    };
-
-    const saveEditedExpense = async (event) => {
-        event.preventDefault();
-
-        try {
-            const response = await axios.put(`http://127.0.0.1:5000/api/expenses/${editingExpense}`, editedExpense);
-            if (response.data.status === 'success') {
-                setExpenses(prevExpenses => prevExpenses.map(expense =>
-                    expense.expense_id === editingExpense ? editedExpense : expense
-                ));
-                setEditingExpense(null);
-                setEditedExpense({});
-            }
-        } catch (error) {
-            console.error('There was an error updating the expense!', error);
-        }
-    };
-
-    const handleEditChange = (event) => {
-        const { name, value } = event.target;
-        setEditedExpense(prevExpense => ({
-            ...prevExpense,
-            [name]: value
-        }));
-    };
-
+    
     return (
-        <div className="dashboard">
-            <header className="header">
-                <h1>Expense Management</h1>
-            </header>
-
-            <form id="expenseForm" onSubmit={addExpense}>
-                <h2>Add an Expense</h2>
-                <label>Description: 
-                    <input 
-                        type="text"
-                        name="description"
-                        id="expenseFormDescription"
-                        required
-                    />
-                </label>
-
-                <label>Amount $:
-                    <input 
-                        type="text"
-                        name="amount"
-                        id="expenseFormAmount"
-                        required
-                    />
-                </label>
-
-                <label>Category: 
-                    <select 
-                        name="category"
-                        id="expenseFormCategory"
-                        required
-                    >
-                        {categories.map((category, index) => (
-                            <option key={index} value={category}>{category}</option>
-                        ))}
-                    </select>
-                </label>
-
-                <label>Date: 
-                    <input
-                        type="date"
-                        name="date"
-                        id="expenseFormDate"
-                        required
-                    />
-                </label>
-
-                <button type="submit">Add Expense</button>
-            </form>
-
-            {editingExpense && (
-                <form onSubmit={saveEditedExpense}>
-                    <h2>Edit Expense</h2>
-                    <label>Description: 
-                        <input 
-                            type="text"
-                            name="description"
-                            value={editedExpense.description}
-                            onChange={handleEditChange}
-                            required
-                        />
-                    </label>
-
-                    <label>Amount $:
-                        <input 
-                            type="text"
-                            name="amount"
-                            value={editedExpense.amount}
-                            onChange={handleEditChange}
-                            required
-                        />
-                    </label>
-
-                    <label>Category: 
-                        <select 
-                            name="category"
-                            value={editedExpense.category}
-                            onChange={handleEditChange}
-                            required
-                        >
-                            {categories.map((category, index) => (
-                                <option key={index} value={category}>{category}</option>
-                            ))}
-                        </select>
-                    </label>
-
-                    <label>Date: 
-                        <input
-                            type="date"
-                            name="date"
-                            value={editedExpense.date}
-                            onChange={handleEditChange}
-                            required
-                        />
-                    </label>
-
-                    <button type="submit">Save Changes</button>
-                </form>
-            )}
-
-            <div className="expense-list">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Description</th>
-                            <th>Amount</th>
-                            <th>Category</th>
-                            <th>Date</th>
-                            <th>Actions</th>  {/* New column for actions */}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {expenses.map(expense => (
-                            <tr key={expense.expense_id}>
-                                <td>{expense.description}</td>
-                                <td>{expense.amount}</td>
-                                <td>{expense.category}</td>
-                                <td>{expense.date}</td>
-                                <td>
-                                    <button onClick={() => editExpense(expense)}>Edit</button>
-                                    <button onClick={() => deleteExpense(expense.expense_id)}>Delete</button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+	<div className="Dashboard">
+	    <header className="header">
+		<h1>Budget Tracker</h1>
+		<div className="account-container">
+		    <button className="account-button" onClick={toggleDropdown}>
+			<span className="account-icon">📊</span> {username}
+		    </button>
+		    {dropdownVisible && (
+			<div className="dropdown">
+			<button className="dropdown-option">Profile</button>
+			<button className="dropdown-option">Settings</button>
+			<button className="dropdown-option">Logout</button>
+			</div>
+		    )}
+		</div>
+	    </header>
+	    <div className="content">
+		<div className="section" onClick={() => routePage('/logbudgets')}>
+		    <h2>Log Budget Goals</h2>
+		    <p1>Log and split expenditure budget into categories</p1>
+		</div>
+		<div className="section" onClick={() => routePage('/expenses')}>
+		    <h2>Expense Management</h2>
+		    <p1>Log your Expenses and compare them alongside your allotted budgeting</p1>
+		</div>
+		<div className="section" onClick={() => routePage('/trends')}>
+		    <h2>Trends</h2>
+		</div>
+		<div className="section">
+		    <h2>Smart Recommendations</h2>
+		</div>
+	    </div>
+	</div>
     );
-                        }
+}
+
 export default Dashboard;
