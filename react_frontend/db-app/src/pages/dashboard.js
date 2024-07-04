@@ -68,8 +68,11 @@ function Dashboard() {
 		<div className="section" onClick={() => routePage('/trends')}>
 		    <h2>Trends</h2>
 		</div>
-		<div className="section">
-		    <h2>Smart Recommendations</h2>
+		<div className="section" onClick={() => routePage('/smart_suggestions')}>
+		    <h2>Smart Suggestions</h2>
+		</div>
+		<div className="section" onClick={() => routePage('/savings_leaderboard')}>
+		    <h2>Savings Leaderboard</h2>
 		</div>
 	    </div>
 	</div>
