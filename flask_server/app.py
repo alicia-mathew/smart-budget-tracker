@@ -23,6 +23,11 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
+# Additional function to get database cursor
+def get_db_conn_and_cursor():
+    conn = sqlite3.connect('milestone1.db')
+    return conn, conn.cursor()
+
 # Serve React App
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
@@ -185,6 +190,198 @@ def get_username():
     user = conn.execute('SELECT name FROM user WHERE user_id = ?', (ind_id, )).fetchone()
     conn.close()
     return jsonify(dict(user)['name'])
+
+
+# API endpoint for smart suggestions
+@app.route('/api/smart_suggestions', methods=['GET'])
+def generate_smart_suggestions():
+    user_id = request.args.get('user_id')
+    conn = get_db_connection()
+
+    # for each category for the user, fetch
+    # 1. the category name
+    # 2. amount budgeted to that category
+    # 3. average amount spent for that category in last three months by the user
+    # 4. average amount budgeted for that category across all users
+    spending_data = conn.execute(
+        """
+        SELECT 
+            sg.category as category, 
+            sg.amount, 
+            AVG(ex.amount) as avg_spending,
+            sg_avg.amount as avg_budget
+        FROM 
+            spending_goal sg
+            LEFT JOIN expenses ex ON ex.user_id = sg.user_id
+                                    AND sg.category = ex.category
+                                    AND ex.date >= DATE('now', '-3 months')
+            LEFT JOIN (
+                SELECT 
+                    category, 
+                    AVG(amount) AS amount
+                FROM 
+                    spending_goal
+                GROUP BY 
+                    category
+            ) sg_avg ON sg.category = sg_avg.category
+        WHERE 
+            sg.user_id = ?
+        GROUP BY sg.category
+        """, 
+        (user_id,)
+    ).fetchall()
+
+    result = [dict(category) for category in spending_data]
+    suggestions = []
+    for category in result:
+        category_name, budget = category["category"], category["amount"]
+        user_spending, avg_budgeted = category["avg_spending"], category["avg_budget"]
+        # check if there are categories with significant over/under spending
+        if user_spending is not None:
+            spend_ratio = user_spending/budget
+            if spend_ratio > 1.3:
+                suggestions.append({"category": category_name, "text": f"Increase your budget for this category since you spend {spend_ratio*100:.2f}% of this budget on average"})
+            elif spend_ratio < 0.7:
+                suggestions.append({"category": category_name, "text": f"Decrease your budget for this category since you only spend {spend_ratio*100:.2f}% of this budget on average"})
+        
+        # check if there are categories with significant over budgeting relative to other users
+        budget_ratio = budget/avg_budgeted
+        if budget_ratio > 2:
+            suggestions.append({"category": category_name, "text": f"Decrease your budget for this category since you budget {budget_ratio:.2f} times more for this type of expense than the average user."})
+    
+    return jsonify(suggestions)
+
+
+# API endpoint for fetching leaderboard
+@app.route('/api/leaderboard', methods=['GET'])
+def leaderboard():
+    conn = get_db_connection()
+    leaderboard = conn.execute(
+        """
+        SELECT 
+            user.name, 
+            SUM(sg.amount) - SUM(ex.amount) as net_savings
+        FROM
+            user
+            LEFT JOIN expenses ex on ex.user_id = user.user_id
+            LEFT JOIN spending_goal sg on sg.user_id = user.user_id
+        GROUP BY user.name
+        HAVING net_savings is not null
+        ORDER BY net_savings DESC
+        """
+    ).fetchall()
+
+    return jsonify([dict(category) for category in leaderboard])
+
+
+# API endpoint for fetching user groups
+@app.route('/api/user_groups', methods=['GET'])
+def get_user_groups():
+    user_id = request.args.get('user_id')
+    conn = get_db_connection()
+
+    response = conn.execute(
+        """
+        SELECT 
+            gm.group_id, 
+            user.name
+        FROM
+            group_member gm
+            LEFT JOIN user on gm.group_id = user.user_id
+        WHERE
+            ind_id = ?
+        """,
+        (user_id,)
+    ).fetchall()
+
+    groups = [dict(group) for group in response]
+    return jsonify(groups)
+
+
+# API endpoint for creating a new group
+@app.route('/api/create_group', methods=['PUT'])
+def create_group():
+    user_id = request.args.get('user_id')
+    group_name = request.args.get('group_name')
+    conn, cursor = get_db_conn_and_cursor()
+    # create the group
+    # insert into users
+    import random
+    from datetime import datetime
+    print("NEW GROUP NAME", group_name)
+    group_id, role_id, mem_id = random.randint(1, 10000), random.randint(1, 10000), random.randint(1, 10000)
+    cursor.execute(
+        """
+        INSERT INTO user (user_id, name) VALUES (?, ?)
+        """,
+        (group_id, group_name)
+    )
+
+    # insert into groups
+    cursor.execute(
+        """
+        INSERT INTO groups (group_id, created_date) VALUES (?, ?)
+        """,
+        (group_id, datetime.today())
+    )
+
+    # add the creator as an "admin" user
+    # create a role
+    cursor.execute(
+        """
+        INSERT INTO role (role_id, create_sg, modify_exp, Manage_mem, add_exp) VALUES (?, 1, 1, 1, 1)
+        """,
+        (role_id,)
+    )
+
+    # create a group member
+    cursor.execute(
+        """
+        INSERT INTO group_member (mem_id, group_id, role_id, ind_id) VALUES (?, ?, ?, ?)
+        """,
+        (mem_id, group_id, role_id, user_id)
+    )
+
+    # commit changes
+    conn.commit()
+    return "Successfully created new group"
+    
+
+# API endpoint for adding a user to a group
+@app.route('/api/join_group', methods=['PUT'])
+def join_group():
+    import random
+    user_id = request.args.get('user_id')
+    group_id = request.args.get('group_id')
+    conn, cursor = get_db_conn_and_cursor()
+    role_id, mem_id = random.randint(1, 10000), random.randint(1, 10000)
+    
+    # add the user with no permissions by default
+    # create a role
+    cursor.execute(
+        """
+        INSERT INTO role (role_id, create_sg, modify_exp, Manage_mem, add_exp) VALUES (?, 0, 0, 0, 0)
+        """,
+        (role_id,)
+    )
+    role_id = cursor.lastrowid
+
+    # create a group member
+    cursor.execute(
+        """
+        INSERT INTO group_member (mem_id, group_id, role_id, ind_id) VALUES (?, ?, ?, ?)
+        """,
+        (mem_id, group_id, role_id, user_id)
+    )
+
+    # commit changes
+    conn.commit()
+    return "Successfully added to group"
+
+# API endpoint for modifying permissions of a user in a group
+@app.route('/api/modify_group_permissions', methods=['PUT'])
+def modify_group():
+    pass
 
 
 if __name__ == '__main__':

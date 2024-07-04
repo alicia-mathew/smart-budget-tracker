@@ -5,6 +5,8 @@ import Dashboard from './pages/dashboard';
 import Expenses from './pages/expenses';
 import LogBudget from './pages/logbudgets';
 import Trends from './pages/trends';
+import SmartSuggestions from './pages/smart_suggestions';
+import Leaderboard from './pages/leaderboard';
 import './App.css';
 
 // all this needs edits
@@ -49,6 +51,21 @@ const TrendsPage = () => {
     );
 };
 
+const SmartSuggestionsPage = () => {
+    return (
+	<Routes>
+	    <Route path='/smart_suggestions' element={<SmartSuggestions />} />
+	</Routes>
+    );
+};
+
+const LeaderboardPage = () => {
+    return (
+	<Routes>
+	    <Route path='/savings_leaderboard' element={<Leaderboard />} />
+	</Routes>
+    );
+};
 
 function App() {
     return (
@@ -57,16 +74,22 @@ function App() {
                 <LogIn />
             </Router>
 	    <Router>
-		<Main />
+			<Main />
 	    </Router>
 	    <Router>
-		<ExpenseList />
+			<ExpenseList />
 	    </Router>
 	    <Router>
-		<Budget />
+			<Budget />
 	    </Router>
 	    <Router>
-		<TrendsPage />
+			<TrendsPage />
+	    </Router>
+		<Router>
+			<SmartSuggestionsPage />
+	    </Router>
+		<Router>
+			<LeaderboardPage />
 	    </Router>
 	</div>
     );
