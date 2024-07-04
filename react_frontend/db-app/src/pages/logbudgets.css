@@ -113,14 +113,25 @@ h2 {
   border-radius: 5px;
 }
 
-.table-row button {
-  padding: 5px 10px;
+.button-1 {
   font-size: 24px;
-  border: none;
+}
+
+.table-row button {
+  flex: 1;
+  padding: 5px 10px;
+  border: 0.2px solid white;
   color: #fff;
-  border-radius: 5px;
+  border-radius: 14px;
   cursor: pointer;
+  margin-left: 5px;
+  margin-right: 5px;
+  text-align: center;
   transition: background-color 0.3s ease;
+}
+
+.table-row button:hover {
+  border: 1px solid white;
 }
 
 .table-row:nth-child(even) button {
@@ -147,6 +158,32 @@ h2 {
 
 .table-row:nth-child(odd) {
   background-color: #3c3f41;
+}
+
+.dashboard {
+  text-align: left;
+}
+
+.button-dashboard {
+  text-align: center;
+  align: center;
+  flex: 1;
+  margin: 0 5px;
+  font-size: 18px;
+  background-color: #3c3f41;
+  border: 5px solid transparent;
+  color: white;
+  border-radius: 5px;
+}
+
+.button-dashboard:hover {
+  background-color: #333;
+}
+
+.error-message {
+  text-align: center;
+  font-size: 15px;
+  margin-bottom: 5px;
 }
 
 *:focus {

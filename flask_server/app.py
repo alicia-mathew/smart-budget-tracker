@@ -76,7 +76,7 @@ def add_categories():
     user_id = data['user_id']
     print(user_id)
     date_format = '%Y-%m-%d'
-    start_date = datetime.strptime(data['startDate'], date_format)
+    start_date = datetime.strptime(datetime.today().strftime(date_format), date_format)
     date_created = start_date
     spending_id = f"SG_{int(time.time())}"
     category = data['category']
@@ -92,12 +92,35 @@ def add_categories():
     return jsonify(data), 201
 
 
+@app.route('/api/category', methods=['PUT'])
+def update_budgets():
+    data = request.get_json()
+    spending_id = data['budget_id']
+    category = data['category']
+    amount = data['value']
+    conn = get_db_connection()
+    conn.execute('UPDATE spending_goal SET category = ?, amount = ? WHERE spending_id = ?', (category, amount, spending_id))
+    conn.commit()
+    conn.close()
+    return jsonify({'state': 'success', 'spending_id': spending_id})
+
+
+@app.route('/api/category', methods=['DELETE'])
+def delete_budget():
+    spending_id = request.args.get('spending_id')
+    conn = get_db_connection()
+    conn.execute('DELETE FROM spending_goal WHERE spending_id = ?', (spending_id, ))
+    conn.commit()
+    conn.close()
+    return jsonify({'state': 'success', 'spending_id': spending_id})
+
+
 @app.route('/api/budget', methods=['GET'])
 def get_budgets():
     user_id = request.args.get('user_id')
     print(user_id)
     conn = get_db_connection()
-    budgets = conn.execute('SELECT category, amount, start_date, end_date FROM spending_goal WHERE user_id = ?',
+    budgets = conn.execute('SELECT spending_id, category, amount, start_date, end_date FROM spending_goal WHERE user_id = ?',
                            (user_id, )).fetchall()
     conn.close()
     budget_list = [dict(budget) for budget in list(budgets)]
