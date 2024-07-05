@@ -7,6 +7,8 @@ import LogBudget from './pages/logbudgets';
 import Trends from './pages/trends';
 import SmartSuggestions from './pages/smart_suggestions';
 import Leaderboard from './pages/leaderboard';
+import Groups from './pages/groups';
+import GroupPermissions from './pages/group_permissions';
 import './App.css';
 
 // all this needs edits
@@ -67,6 +69,22 @@ const LeaderboardPage = () => {
     );
 };
 
+const GroupsPage = () => {
+    return (
+	<Routes>
+	    <Route path='/groups' element={<Groups />} />
+	</Routes>
+    );
+};
+
+const GroupPermissionsPage = () => {
+    return (
+	<Routes>
+	    <Route path='/groups/manage_permissions/:group_id' element={<GroupPermissions />} />
+	</Routes>
+    );
+};
+
 function App() {
     return (
         <div className='App'>
@@ -90,6 +108,12 @@ function App() {
 	    </Router>
 		<Router>
 			<LeaderboardPage />
+	    </Router>
+		<Router>
+			<GroupsPage />
+	    </Router>
+		<Router>
+			<GroupPermissionsPage />
 	    </Router>
 	</div>
     );

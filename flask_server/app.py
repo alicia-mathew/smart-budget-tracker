@@ -299,16 +299,16 @@ def get_user_groups():
 
 
 # API endpoint for creating a new group
-@app.route('/api/create_group', methods=['PUT'])
+@app.route('/api/create_group', methods=['POST'])
 def create_group():
-    user_id = request.args.get('user_id')
-    group_name = request.args.get('group_name')
+    data = request.get_json()
+    user_id = data['user_id']
+    group_name = data['group_name']
     conn, cursor = get_db_conn_and_cursor()
     # create the group
     # insert into users
     import random
     from datetime import datetime
-    print("NEW GROUP NAME", group_name)
     group_id, role_id, mem_id = random.randint(1, 10000), random.randint(1, 10000), random.randint(1, 10000)
     cursor.execute(
         """
@@ -344,15 +344,16 @@ def create_group():
 
     # commit changes
     conn.commit()
-    return "Successfully created new group"
+    return {"group_id": group_id, "name": group_name}
     
 
 # API endpoint for adding a user to a group
-@app.route('/api/join_group', methods=['PUT'])
+@app.route('/api/join_group', methods=['POST'])
 def join_group():
     import random
-    user_id = request.args.get('user_id')
-    group_id = request.args.get('group_id')
+    data = request.get_json()
+    user_id = data['user_id']
+    group_id = data['group_id']
     conn, cursor = get_db_conn_and_cursor()
     role_id, mem_id = random.randint(1, 10000), random.randint(1, 10000)
     
@@ -364,7 +365,6 @@ def join_group():
         """,
         (role_id,)
     )
-    role_id = cursor.lastrowid
 
     # create a group member
     cursor.execute(
@@ -376,13 +376,87 @@ def join_group():
 
     # commit changes
     conn.commit()
-    return "Successfully added to group"
+
+    group_name = cursor.execute(""" SELECT name FROM user WHERE user.user_id = ?""", (group_id,)).fetchone()
+    return {"group_id": group_id, "name": group_name}
+
+
+# API endpoint to get permissions for all members in a group
+@app.route('/api/get_group_permissions', methods=['GET'])
+def get_group_permissions():
+    group_id = request.args.get('group_id')
+    conn = get_db_connection()
+
+    permissions = conn.execute(
+        """
+        SELECT 
+            user.name, 
+            role.create_sg, 
+            role.modify_exp, 
+            role.Manage_mem, 
+            role.add_exp,
+            role.role_id
+        FROM
+            groups
+            LEFT JOIN group_member gm on groups.group_id = gm.group_id
+            LEFT JOIN role on gm.role_id = role.role_id
+            LEFT JOIN user on user.user_id = gm.ind_id
+        WHERE
+            groups.group_id = ?
+        """,
+        (group_id,)
+    ).fetchall()
+
+    return jsonify([dict(permission) for permission in permissions])
 
 # API endpoint for modifying permissions of a user in a group
-@app.route('/api/modify_group_permissions', methods=['PUT'])
+@app.route('/api/modify_group_permissions', methods=['POST'])
 def modify_group():
-    pass
+    conn, cursor = get_db_conn_and_cursor()
+    data = request.get_json()
 
+    for user in data:
+        cursor.execute(
+            """
+            UPDATE 
+                role 
+            SET 
+                create_sg = ?, 
+                modify_exp = ?, 
+                Manage_mem = ?, 
+                add_exp = ? 
+            WHERE 
+                role_id = ?
+            """,
+            (user["create_sg"], user["modify_exp"], user["manage_mem"], user["add_exp"], user["role_id"])
+        )
+    conn.commit()
+
+    return "Successfully modified permissions"
+
+# API endpoint for checking if the user has permission to manage group permissions
+@app.route('/api/can_modify_group_permissions', methods=['POST'])
+def can_modify_group():
+    data = request.get_json()
+    user_id = data['user_id']
+    group_id = data['group_id']
+    conn = get_db_connection()
+
+    is_admin = conn.execute(
+        """
+        SELECT
+            role.Manage_mem
+        FROM
+            role
+            LEFT JOIN group_member gm on gm.role_id = role.role_id
+        WHERE
+            gm.ind_id = ?
+            AND gm.group_id = ?
+        """,
+        (user_id, group_id)
+    ).fetchone()
+    
+    return dict(is_admin)
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -74,6 +74,9 @@ function Dashboard() {
 		<div className="section" onClick={() => routePage('/savings_leaderboard')}>
 		    <h2>Savings Leaderboard</h2>
 		</div>
+		<div className="section" onClick={() => routePage('/groups')}>
+		    <h2>Group Management</h2>
+		</div>
 	    </div>
 	</div>
     );

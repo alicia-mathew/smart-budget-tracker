@@ -42,5 +42,5 @@ function Leaderboard() {
             </table>
         </div>
     );
-                        }
+}
 export default Leaderboard;
