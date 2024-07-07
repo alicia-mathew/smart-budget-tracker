@@ -17,3 +17,10 @@ N/A
 # Trends Monthly Expenditure
 [('06', 'Clothes', 75), ('06', 'Food', 250), ('06', 'Groceries', 250),
  ('06', 'Rent', 900), ('06', 'Miscellaneous', 125)]
+
+# Smart Suggestions
+[('Entertainment', 10000.0, None, 5150.0), ('Food', 80.0, 10.0, 251.0), 
+('Groceries', 100.0, 123.0, 100.0), ('Personal Care', 89730423074.0, None, 29910141025.666668)]
+
+# Savings Leaderboard
+[('Evan', 179460865716.0), ('Aly', 14119.76)]
