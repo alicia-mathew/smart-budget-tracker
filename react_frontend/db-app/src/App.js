@@ -32,7 +32,7 @@ const Main = () => {
 const ExpenseList = () => {
     return (
 	<Routes>
-	    <Route path='/expenses' element={<Expenses />} />
+	    <Route path='/expenses/:user_id' element={<Expenses />} />
 	</Routes>
     );
 };
@@ -40,7 +40,7 @@ const ExpenseList = () => {
 const Budget = () => {
     return (
 	<Routes>
-	    <Route path='/logbudgets' element={<LogBudget />} />
+	    <Route path='/logbudgets/:user_id' element={<LogBudget />} />
 	</Routes>
     );
 };
@@ -48,7 +48,7 @@ const Budget = () => {
 const TrendsPage = () => {
     return (
 	<Routes>
-	    <Route path='/trends' element={<Trends />} />
+	    <Route path='/trends/:user_id' element={<Trends />} />
 	</Routes>
     );
 };
@@ -56,7 +56,7 @@ const TrendsPage = () => {
 const SmartSuggestionsPage = () => {
     return (
 	<Routes>
-	    <Route path='/smart_suggestions' element={<SmartSuggestions />} />
+	    <Route path='/smart_suggestions/:user_id' element={<SmartSuggestions />} />
 	</Routes>
     );
 };

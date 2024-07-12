@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useNavigation } from 'react-router-dom';
 import './logbudgets.css'
+import { useParams } from 'react-router-dom';
 
 function LogBudgets() {
     const navigate = useNavigate();
     const [rows, setRows] = useState([{category : '', value : '', startDate : '', endDate : '', isNew : true}]);
     const [budget, setBudget] = useState([]);
 
-    const user_id = JSON.parse(localStorage.getItem('user')).ind_id;
+    const { user_id } = useParams();
 
     useEffect(() => {fetchBudget();}, []);
 

@@ -8,7 +8,7 @@ function Groups() {
     const user_id = user.ind_id
     const [permissions, setPermissions] = useState([]);
     const [canEditPermissions, setCanEditPermissions] = useState(false);
-    const { group_id } = useParams()
+    const { group_id } = useParams();
 
     useEffect(() => {
         fetchPermissions();

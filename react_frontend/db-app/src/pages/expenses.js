@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './expenses.css';
+import { useParams } from 'react-router-dom';
 
 function Expenses() {
     const [categories, setCategories] = useState([]);
@@ -12,7 +13,9 @@ function Expenses() {
         category: '',
         date: ''
     });
+
     const user = JSON.parse(localStorage.getItem('user'));
+    const { user_id } = useParams();
 
     useEffect(() => {
         fetchExpenses();
@@ -21,7 +24,6 @@ function Expenses() {
 
 
     const fetchCategories = async () => {
-	const user_id = user.ind_id
 	const response = await axios.get(`http://127.0.0.1:5000/api/categories?user_id=${user_id}`);
 	console.log(response.data);
 	setCategories(response.data);
@@ -29,9 +31,7 @@ function Expenses() {
 
     const fetchExpenses = async () => {
         try {
-            const userid = user.ind_id
-            console.log(userid)
-            const response = await axios.get(`http://127.0.0.1:5000/api/expenses?user_id=${userid}`);
+            const response = await axios.get(`http://127.0.0.1:5000/api/expenses?user_id=${user_id}`);
             setExpenses(response.data);
         } catch (error) {
             console.error('There was an error fetching the expenses!', error);
@@ -51,7 +51,7 @@ function Expenses() {
             amount: parseFloat(amt),
             category: cat,
             date: date,
-            user_id: user.ind_id  // Use the logged-in user's ID
+            user_id: user_id
         };
 
         console.log("Sending new expense:", newExpense);
