@@ -7,6 +7,8 @@ import LogBudget from './pages/logbudgets';
 import Trends from './pages/trends';
 import SmartSuggestions from './pages/smart_suggestions';
 import Leaderboard from './pages/leaderboard';
+import Groups from './pages/groups';
+import GroupPermissions from './pages/group_permissions';
 import './App.css';
 
 // all this needs edits
@@ -30,7 +32,7 @@ const Main = () => {
 const ExpenseList = () => {
     return (
 	<Routes>
-	    <Route path='/expenses' element={<Expenses />} />
+	    <Route path='/expenses/:user_id' element={<Expenses />} />
 	</Routes>
     );
 };
@@ -38,7 +40,7 @@ const ExpenseList = () => {
 const Budget = () => {
     return (
 	<Routes>
-	    <Route path='/logbudgets' element={<LogBudget />} />
+	    <Route path='/logbudgets/:user_id' element={<LogBudget />} />
 	</Routes>
     );
 };
@@ -46,7 +48,7 @@ const Budget = () => {
 const TrendsPage = () => {
     return (
 	<Routes>
-	    <Route path='/trends' element={<Trends />} />
+	    <Route path='/trends/:user_id' element={<Trends />} />
 	</Routes>
     );
 };
@@ -54,7 +56,7 @@ const TrendsPage = () => {
 const SmartSuggestionsPage = () => {
     return (
 	<Routes>
-	    <Route path='/smart_suggestions' element={<SmartSuggestions />} />
+	    <Route path='/smart_suggestions/:user_id' element={<SmartSuggestions />} />
 	</Routes>
     );
 };
@@ -63,6 +65,22 @@ const LeaderboardPage = () => {
     return (
 	<Routes>
 	    <Route path='/savings_leaderboard' element={<Leaderboard />} />
+	</Routes>
+    );
+};
+
+const GroupsPage = () => {
+    return (
+	<Routes>
+	    <Route path='/groups' element={<Groups />} />
+	</Routes>
+    );
+};
+
+const GroupPermissionsPage = () => {
+    return (
+	<Routes>
+	    <Route path='/groups/manage_permissions/:group_id' element={<GroupPermissions />} />
 	</Routes>
     );
 };
@@ -90,6 +108,12 @@ function App() {
 	    </Router>
 		<Router>
 			<LeaderboardPage />
+	    </Router>
+		<Router>
+			<GroupsPage />
+	    </Router>
+		<Router>
+			<GroupPermissionsPage />
 	    </Router>
 	</div>
     );
