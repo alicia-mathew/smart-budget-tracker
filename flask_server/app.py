@@ -23,6 +23,12 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
+# function to get new id
+def get_next_id(table_name, pk):
+    conn = get_db_connection()
+    next_id = conn.execute("""SELECT MAX(?) FROM ?""", (pk, table_name))
+    return next_id + 1
+
 # Additional function to get database cursor
 def get_db_conn_and_cursor():
     conn = sqlite3.connect('milestone1.db')

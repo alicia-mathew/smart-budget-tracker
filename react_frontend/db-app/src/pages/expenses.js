@@ -19,7 +19,7 @@ function Expenses() {
 
     useEffect(() => {
         fetchExpenses();
-	fetchCategories();
+	    fetchCategories();
     }, []);
 
 
