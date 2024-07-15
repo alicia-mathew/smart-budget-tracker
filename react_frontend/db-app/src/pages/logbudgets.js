@@ -201,9 +201,8 @@ function LogBudgets() {
 		</div>
 		{errorMessage && <div className="error-message">{errorMessage}</div>}	
 	    </div>
-	    <div className="dashboard">
-		<button className="button-dashboard" onClick={() => {goDashboard();}}>Dashboard</button>
-	    </div>
+		<br></br>
+		<button className="dashboard-button" onClick={() => {goDashboard();}}>Return to Dashboard</button>
 	</div>
     );
 }
