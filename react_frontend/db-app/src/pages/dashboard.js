@@ -6,11 +6,9 @@ import { wait } from '@testing-library/user-event/dist/utils';
 
 function Dashboard() {
     const navigate = useNavigate();
-    // useState checks if the button has been clicked (in this case)
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [username, setUsername] = useState('');
 	const [groups, setGroups] = useState([]);
-
     const user = JSON.parse(localStorage.getItem('user'));
 	const [selectedDashboard, setSelectedDashboard] = useState(user.ind_id);
 
@@ -43,7 +41,6 @@ function Dashboard() {
 		setDropdownVisible(!dropdownVisible);
     };
 
-
     const routePage = (page) => {
 	navigate(page);
 	navigate(0)
@@ -56,53 +53,63 @@ function Dashboard() {
     
     return (
 	<div className="Dashboard">
-	    <header className="header">
+		<header className="header">
 		<h1>Budget Tracker</h1>
-		<div className="groups-container">
-			<label>
-				Select Dashboard:
-			</label>
-		    <select onChange={changeSelectedDashboard}>
-				<option key={user.ind_id} value="Personal">Personal</option>
-				{groups.map(group => (
-                            <option key={group.group_id} value={group.group_id}>{group.name}</option>
-                ))}
-			</select>
-		</div>
 		<div className="account-container">
 		    <button className="account-button" onClick={toggleDropdown}>
 			<span className="account-icon">📊</span> {username}
 		    </button>
 		    {dropdownVisible && (
 			<div className="dropdown">
-			<button className="dropdown-option">Profile</button>
-			<button className="dropdown-option">Settings</button>
-			<button className="dropdown-option">Logout</button>
+			    <button className="dropdown-option">Profile</button>
+			    <button className="dropdown-option">Settings</button>
+			    <button className="dropdown-option">Logout</button>
 			</div>
 		    )}
 		</div>
 	    </header>
+		{/* <div className="dashboard-heading">
+            {selectedDashboard === 'Personal' ? (
+                <h2>Welcome to {username}'s Dashboard!</h2>
+            ) : (
+                <h2>Welcome to {selectedDashboard}'s Dashboard!</h2>
+            )}
+        </div> */}
+        <div className="groups-container">
+            <label>Select Dashboard:</label>
+            <select className="select-dashboard" onChange={changeSelectedDashboard}>
+				<option value="Personal">Personal</option>
+                {groups.map(group => (
+                    <option key={group.group_id} value={group.group_id}>{group.name}</option>
+                ))}
+            </select>
+        </div>
+		<br></br>
 	    <div className="content">
-		<div className="section" onClick={() => routePage(`/logbudgets/${selectedDashboard}`)}>
-		    <h2>Log Budget Goals</h2>
-		    <p1>Log and split expenditure budget into categories</p1>
-		</div>
-		<div className="section" onClick={() => routePage(`/expenses/${selectedDashboard}`)}>
-		    <h2>Expense Management</h2>
-		    <p1>Log your Expenses and compare them alongside your allotted budgeting</p1>
-		</div>
-		<div className="section" onClick={() => routePage(`/trends/${selectedDashboard}`)}>
-		    <h2>Trends</h2>
-		</div>
-		<div className="section" onClick={() => routePage(`/smart_suggestions/${selectedDashboard}`)}>
-		    <h2>Smart Suggestions</h2>
-		</div>
-		<div className="section" onClick={() => routePage('/savings_leaderboard/')}>
-		    <h2>Savings Leaderboard</h2>
-		</div>
-		<div className="section" onClick={() => routePage('/groups')}>
-		    <h2>Group Management</h2>
-		</div>
+			<div className="section" onClick={() => routePage(`/logbudgets/${selectedDashboard}`)}>
+				<h2>Budget Goal Management</h2>
+				<p1>Log and split your expenditure budgets into categories.</p1>
+			</div>
+			<div className="section" onClick={() => routePage(`/expenses/${selectedDashboard}`)}>
+				<h2>Expense Management</h2>
+				<p1>Log and manage your expenses.</p1>
+			</div>
+			<div className="section" onClick={() => routePage(`/trends/${selectedDashboard}`)}>
+				<h2>Visualize Spending Patterns</h2>
+				<p1>Take a look at your spending trends.</p1>
+			</div>
+			<div className="section" onClick={() => routePage(`/smart_suggestions/${selectedDashboard}`)}>
+				<h2>Smart Suggestions</h2>
+				<p1>Get some insights and suggestions on how to spend and save more!</p1>
+			</div>
+			<div className="section" onClick={() => routePage('/savings_leaderboard/')}>
+				<h2>Savings Leaderboard</h2>
+				<p1>Find out who the top saver is!</p1>
+			</div>
+			<div className="section" onClick={() => routePage('/groups')}>
+				<h2>Group Management</h2>
+				<p1>Manage your group-wide spending.</p1>
+			</div>
 	    </div>
 	</div>
     );
