@@ -6,7 +6,7 @@ import time
 from datetime import datetime
 
 app = Flask(__name__, static_folder='../react_frontend/db-app/build')
-CORS(app)  # Enable CORS for all routes
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})  # Enable CORS for all routes
 
 
 # Helper to add a month to time
@@ -16,6 +16,23 @@ def add_months(current_date, months_to_add):
                         current_date.day, current_date.hour, current_date.minute, current_date.second)
     return new_date
 
+# Helper to return formatted monthly data
+def process_expense_data(results):
+    month_mapping = {
+        '01': 'January', '02': 'February', '03': 'March', '04': 'April',
+        '05': 'May', '06': 'June', '07': 'July', '08': 'August',
+        '09': 'September', '10': 'October', '11': 'November', '12': 'December'
+    }
+
+    monthly_data = {}
+
+    for month, category, sum_amount in results:
+        month_name = month_mapping[month]
+        if month_name not in monthly_data:
+            monthly_data[month_name] = {}
+        monthly_data[month_name][category] = sum_amount
+
+    return monthly_data
 
 # Function to connect to the database
 def get_db_connection():
@@ -132,6 +149,26 @@ def get_budgets():
     budget_list = [dict(budget) for budget in list(budgets)]
     return jsonify(budget_list)
 
+@app.route('/api/trends', methods=['GET'])
+def get_comp_data():
+    user_id = request.args.get('user_id')
+    print(user_id)
+    conn = get_db_connection()
+    data = conn.execute('SELECT sum(amount), category FROM expenses WHERE user_id = ? GROUP BY 2', (user_id,))
+    data_dict = [dict(cat) for cat in data]
+    conn.close()
+    return jsonify(data_dict)
+
+
+@app.route('/api/radartrends', methods=['GET'])
+def get_radar_data():
+    user_id = request.args.get('user_id')
+    conn = get_db_connection()
+    data = conn.execute('SELECT SUBSTRING(date, 6, 2) AS month, category, SUM(amount) AS sum FROM expenses WHERE user_id = ? GROUP BY 1, 2', (user_id,)).fetchall()
+    monthly_data = process_expense_data(data)
+    formatted_data = [{"Month": month, **categories} for month, categories in monthly_data.items()]
+    return jsonify(formatted_data)
+
 
 # API endpoint to fetch all expenses
 @app.route('/api/expenses', methods=['GET'])
@@ -154,7 +191,8 @@ def add_expense():
     expense_id = f"expense_{int(time.time())}"
     amount = new_expense['amount']
     category = new_expense['category']
-    date = new_expense['date']
+    date_format = '%Y-%m-%d'
+    date = datetime.strptime(new_expense['date'], date_format).date()
     user_id = new_expense['user_id']
     description = new_expense['description']
 
