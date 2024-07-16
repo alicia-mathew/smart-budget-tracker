@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './smart_suggestions.css';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 function SmartSuggestions() {
+    const navigate = useNavigate();
     const [suggestions, setSuggestions] = useState([]);
     const user = JSON.parse(localStorage.getItem('user'));
     const { user_id } = useParams();
@@ -20,6 +21,11 @@ function SmartSuggestions() {
             console.error('There was an error fetching the smart suggestions!', error);
         }
     }
+
+    const goDashboard = () => {
+	navigate('/dashboard');
+	navigate(0); // Add navigate(0) to make sure the navigatee page is refreshed once you go there
+    };
     
     return (
         <div>
@@ -42,7 +48,9 @@ function SmartSuggestions() {
                     ))}
                 </tbody>
             </table>
+	    <br/>
+	    <button className="dashboard-button" onClick={() => {goDashboard();}}>Return to Dashboard</button>
         </div>
     );
-                        }
+}
 export default SmartSuggestions;
