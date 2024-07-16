@@ -118,23 +118,28 @@ html, body {
   position: absolute;
   top: 100%;
   right: 0;
-  background-color: #3c3f41;
-  border: 1px solid #ccc;
-  border-radius: 14px;
-  box-shadow: 0 4px 8px rgba(13, 147, 149, 0.1);
+  background-color: #1e1e1e;
+  border: 1px solid #3c3c3c;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
 }
 
 .dropdown-option {
-  padding: 10px;
+  background: transparent;
+  padding: 10px 20px;
+  border: none;
+  color: white;
   cursor: pointer;
-  width: 50%;
   text-align: left;
+  width: 100%;
+  transition: background-color 0.3s ease
 }
 
-.dropdown-option:hover {
-  background-color: #f0f0f0;
-  cursor: grab;
-}
+/* .dropdown-option:hover { */
+/*   background-color: ; */
+/*   cursor: grab; */
+/* } */
 
 .dashboard-heading {
   text-align: center;

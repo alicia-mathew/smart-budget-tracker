@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './groups.css';
 
 function Groups() {
+    const navigate = useNavigate();
     const [groups, setGroups] = useState([]);
     const user = JSON.parse(localStorage.getItem('user'));
     const user_id = user.ind_id
@@ -41,6 +43,11 @@ function Groups() {
             console.error('There was an error joining the group!', error);
         }
     }
+
+    const goDashboard = () => {
+	navigate('/dashboard');
+	navigate(0);
+    };
 
     return (
         <div>
@@ -97,6 +104,8 @@ function Groups() {
                     <button type="submit">Join</button>
                 </form>
             </div>
+	    <br/>
+	    <button className="dashboard-button" onClick={() => {goDashboard();}}>Return to Dashboard</button>
         </div>
     );
 }

@@ -8,9 +8,10 @@ function Dashboard() {
     const navigate = useNavigate();
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [username, setUsername] = useState('');
-	const [groups, setGroups] = useState([]);
+    const [groups, setGroups] = useState([]);
     const user = JSON.parse(localStorage.getItem('user'));
-	const [selectedDashboard, setSelectedDashboard] = useState(user.ind_id);
+    const [selectedDashboard, setSelectedDashboard] = useState('Personal');
+    const [selectedUser, setSelectedUser] = useState(user.ind_id);
 
     useEffect(() => {
 		fetchUser();
@@ -46,11 +47,17 @@ function Dashboard() {
 	navigate(0)
     };
 
-	const changeSelectedDashboard = (event) => {
-		const {value} = event.target;
-		setSelectedDashboard(value);
+    const changeSelectedDashboard = (event) => {
+	if (event.target.value === 'Personal') {
+	    setSelectedUser(user.ind_id);
+	    setSelectedDashboard(event.target.value);
+	} else {
+	    const value = JSON.parse(event.target.value);
+	    setSelectedDashboard(value.name);
+	    setSelectedUser(value.group_id);
 	}
-    
+    }
+
     return (
 	<div className="Dashboard">
 		<header className="header">
@@ -61,44 +68,42 @@ function Dashboard() {
 		    </button>
 		    {dropdownVisible && (
 			<div className="dropdown">
-			    <button className="dropdown-option">Profile</button>
-			    <button className="dropdown-option">Settings</button>
-			    <button className="dropdown-option">Logout</button>
+			    <button className="dropdown-option" onClick={() => routePage('/home')}>Logout</button>
 			</div>
 		    )}
 		</div>
 	    </header>
-		{/* <div className="dashboard-heading">
+		{<div className="dashboard-heading">
             {selectedDashboard === 'Personal' ? (
                 <h2>Welcome to {username}'s Dashboard!</h2>
             ) : (
                 <h2>Welcome to {selectedDashboard}'s Dashboard!</h2>
             )}
-        </div> */}
+        </div>}
         <div className="groups-container">
             <label>Select Dashboard:</label>
             <select className="select-dashboard" onChange={changeSelectedDashboard}>
 				<option value="Personal">Personal</option>
                 {groups.map(group => (
-                    <option key={group.group_id} value={group.group_id}>{group.name}</option>
+                    <option key={group.group_id} value={JSON.stringify({ name: group.name, id: group.group_id })}>{group.name}</option>
                 ))}
             </select>
         </div>
 		<br></br>
 	    <div className="content">
-			<div className="section" onClick={() => routePage(`/logbudgets/${selectedDashboard}`)}>
+			<div className="section" onClick={() => routePage(`/logbudgets/${selectedUser}`)}>
 				<h2>Budget Goal Management</h2>
 				<p1>Log and split your expenditure budgets into categories.</p1>
 			</div>
-			<div className="section" onClick={() => routePage(`/expenses/${selectedDashboard}`)}>
+			<div className="section" onClick={() => routePage(`/expenses/${selectedUser}`)}>
 				<h2>Expense Management</h2>
 				<p1>Log and manage your expenses.</p1>
 			</div>
-			<div className="section" onClick={() => routePage(`/trends/${selectedDashboard}`)}>
+			<div className="section" onClick={() => routePage(`/trends/${selectedUser}`)}>
 				<h2>Visualize Spending Patterns</h2>
 				<p1>Take a look at your spending trends.</p1>
 			</div>
-			<div className="section" onClick={() => routePage(`/smart_suggestions/${selectedDashboard}`)}>
+			<div className="section" onClick={() => routePage(`/smart_suggestions/${selectedUser}`)}>
 				<h2>Smart Suggestions</h2>
 				<p1>Get some insights and suggestions on how to spend and save more!</p1>
 			</div>
