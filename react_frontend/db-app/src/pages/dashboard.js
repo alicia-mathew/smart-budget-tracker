@@ -53,8 +53,9 @@ function Dashboard() {
 	    setSelectedDashboard(event.target.value);
 	} else {
 	    const value = JSON.parse(event.target.value);
+	    console.log(value);
 	    setSelectedDashboard(value.name);
-	    setSelectedUser(value.group_id);
+	    setSelectedUser(value.id);
 	}
     }
 
