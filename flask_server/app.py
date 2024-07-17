@@ -36,19 +36,21 @@ def process_expense_data(results):
 
 # Function to connect to the database
 def get_db_connection():
-    conn = sqlite3.connect('milestone1.db')
+    conn = sqlite3.connect('production.db')
     conn.row_factory = sqlite3.Row
     return conn
 
 # function to get new id
 def get_next_id(table_name, pk):
     conn = get_db_connection()
-    next_id = conn.execute("""SELECT MAX(?) FROM ?""", (pk, table_name))
-    return next_id + 1
+    next_id = conn.execute(f"""SELECT MAX({pk}) FROM {table_name}""").fetchone()
+    next_id = dict(next_id)[f"MAX({pk})"] + 1
+    print("NEXT ID", table_name, pk, next_id)
+    return next_id
 
 # Additional function to get database cursor
 def get_db_conn_and_cursor():
-    conn = sqlite3.connect('milestone1.db')
+    conn = sqlite3.connect('production.db')
     return conn, conn.cursor()
 
 # Serve React App
@@ -88,7 +90,6 @@ def get_categories():
     user_id = request.args.get('user_id')
     conn = get_db_connection()
     categories = conn.execute('SELECT category FROM spending_goal WHERE user_id = ?', (user_id, )).fetchall()
-    print([cat[0] for cat in categories])
     conn.close()
     return jsonify([cat[0] for cat in categories])
 
@@ -97,19 +98,13 @@ def get_categories():
 def add_categories():
     data = request.get_json()
     user_id = data['user_id']
-    print(user_id)
-    date_format = '%Y-%m-%d'
-    start_date = datetime.strptime(datetime.today().strftime(date_format), date_format)
-    date_created = start_date
-    spending_id = f"SG_{int(time.time())}"
+    spending_id = get_next_id("spending_goal", "spending_id")
     category = data['category']
-    end_date = add_months(start_date, 1)
     amount = data['value']
 
     conn = get_db_connection()
-    conn.execute('INSERT INTO spending_goal VALUES (?, ?, ?, ?, ?, ?, ?)',
-                 (spending_id, amount, category, date_created.date(), user_id, end_date.date(),
-                  start_date.date()))
+    conn.execute('INSERT INTO spending_goal VALUES (?, ?, ?, ?)',
+                 (spending_id, amount, category, user_id))
     conn.commit()
     conn.close()
     return jsonify(data), 201
@@ -143,7 +138,7 @@ def get_budgets():
     user_id = request.args.get('user_id')
     print(user_id)
     conn = get_db_connection()
-    budgets = conn.execute('SELECT spending_id, category, amount, start_date, end_date FROM spending_goal WHERE user_id = ?',
+    budgets = conn.execute('SELECT spending_id, category, amount FROM spending_goal WHERE user_id = ?',
                            (user_id, )).fetchall()
     conn.close()
     budget_list = [dict(budget) for budget in list(budgets)]
@@ -173,14 +168,11 @@ def get_radar_data():
 # API endpoint to fetch all expenses
 @app.route('/api/expenses', methods=['GET'])
 def get_expenses():
-    print("test")
     user_id = request.args.get('user_id')
-    print(user_id)
     conn = get_db_connection()
-    expenses = conn.execute('SELECT * FROM expenses WHERE user_id = ?', (user_id,)).fetchall()
+    expenses = conn.execute('SELECT * FROM expenses WHERE user_id = ? ORDER BY date DESC', (user_id,)).fetchall()
     conn.close()
     expenses_list = [dict(expense) for expense in expenses]
-    print(expenses_list)
     return jsonify(expenses_list)
 
 # API endpoint to add a new expense
@@ -188,7 +180,7 @@ def get_expenses():
 def add_expense():
     new_expense = request.get_json()
     # expense_id = new_expense['expense_id']
-    expense_id = f"expense_{int(time.time())}"
+    expense_id = get_next_id("expenses", "expense_id")
     amount = new_expense['amount']
     category = new_expense['category']
     date_format = '%Y-%m-%d'
@@ -375,8 +367,7 @@ def create_group():
     # create the group
     # insert into users
     import random
-    from datetime import datetime
-    group_id, role_id, mem_id = random.randint(1, 10000), random.randint(1, 10000), random.randint(1, 10000)
+    group_id, role_id, mem_id = get_next_id("groups", "group_id"), get_next_id("role", "role_id"), get_next_id("group_member", "mem_id")
     cursor.execute(
         """
         INSERT INTO user (user_id, name) VALUES (?, ?)
@@ -387,16 +378,16 @@ def create_group():
     # insert into groups
     cursor.execute(
         """
-        INSERT INTO groups (group_id, created_date) VALUES (?, ?)
+        INSERT INTO groups (group_id) VALUES (?)
         """,
-        (group_id, datetime.today())
+        (group_id,)
     )
 
     # add the creator as an "admin" user
     # create a role
     cursor.execute(
         """
-        INSERT INTO role (role_id, create_sg, modify_exp, Manage_mem, add_exp) VALUES (?, 1, 1, 1, 1)
+        INSERT INTO role (role_id, create_sg, modify_exp, manage_mem, add_exp) VALUES (?, 1, 1, 1, 1)
         """,
         (role_id,)
     )
@@ -422,13 +413,13 @@ def join_group():
     user_id = data['user_id']
     group_id = data['group_id']
     conn, cursor = get_db_conn_and_cursor()
-    role_id, mem_id = random.randint(1, 10000), random.randint(1, 10000)
+    role_id, mem_id = get_next_id("role", "role_id"), get_next_id("group_member", "mem_id")
     
     # add the user with no permissions by default
     # create a role
     cursor.execute(
         """
-        INSERT INTO role (role_id, create_sg, modify_exp, Manage_mem, add_exp) VALUES (?, 0, 0, 0, 0)
+        INSERT INTO role (role_id, create_sg, modify_exp, manage_mem, add_exp) VALUES (?, 0, 0, 0, 0)
         """,
         (role_id,)
     )
@@ -460,7 +451,7 @@ def get_group_permissions():
             user.name, 
             role.create_sg, 
             role.modify_exp, 
-            role.Manage_mem, 
+            role.manage_mem, 
             role.add_exp,
             role.role_id
         FROM
@@ -490,7 +481,7 @@ def modify_group():
             SET 
                 create_sg = ?, 
                 modify_exp = ?, 
-                Manage_mem = ?, 
+                manage_mem = ?, 
                 add_exp = ? 
             WHERE 
                 role_id = ?
@@ -512,7 +503,7 @@ def can_modify_group():
     is_admin = conn.execute(
         """
         SELECT
-            role.Manage_mem
+            role.manage_mem
         FROM
             role
             LEFT JOIN group_member gm on gm.role_id = role.role_id
@@ -522,7 +513,6 @@ def can_modify_group():
         """,
         (user_id, group_id)
     ).fetchone()
-    
     return dict(is_admin)
 
 if __name__ == '__main__':
