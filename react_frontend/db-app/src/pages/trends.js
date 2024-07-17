@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Line, Radar } from 'react-chartjs-2';
 import Chart from 'chart.js/auto';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { CategoryScale, RadialLinearScale } from 'chart.js';
 import './trends.css';
 import axios from 'axios';
@@ -126,7 +126,7 @@ function Trends() {
     const [radarSelectedMonth, setRadarSelectedMonth] = useState('');
     const navigate = useNavigate();
 
-    const user_id = JSON.parse(localStorage.getItem('user')).ind_id;
+    const user_id = useParams();
 
     const createLineChart = async () => {
         try {
@@ -198,7 +198,7 @@ function Trends() {
 	}
     }, [radarSelectedMonth]);
 
-    if (!lineChartData && !radarChartData) return <div>Loading...</div>;
+    // if (!lineChartData && !radarChartData) return <div>No expenses logged...</div>;
 
     return (
         <div className="Trends">
