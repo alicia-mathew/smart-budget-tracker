@@ -4,7 +4,8 @@
   border-radius: 14px;
   box-shadow: 0 4px 20px rgba(10, 0, 0, 0.2);
   max-width: 800px;
-  width: 200%;
+  width: 100%;
+  margin: auto;
 }
 
 h1, h2, h3 {
@@ -22,8 +23,8 @@ h1, h2, h3 {
   padding: 5px 10px;
   box-sizing: border-box;
   display: inline-block;
-  width: 21%; /* Adjust width as needed */
-  margin: 5px 10px; /* Adds space between filter inputs */
+  width: auto; /* Adjust width as needed */
+  margin: 5px; /* Adds space between filter inputs */
   text-align: center;
 }
 

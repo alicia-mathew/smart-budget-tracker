@@ -126,17 +126,15 @@ function Trends() {
     const [radarSelectedMonth, setRadarSelectedMonth] = useState('');
     const navigate = useNavigate();
 
-    const user_id = useParams();
+    const { user_id } = useParams();
 
     const createLineChart = async () => {
         try {
             const expensesResponse = await axios.get(`http://127.0.0.1:5000/api/radartrends?user_id=${user_id}`);
             const budgetsResponse = await axios.get(`http://127.0.0.1:5000/api/budget?user_id=${user_id}`);
-            console.log(budgetsResponse.data);
             const monthlyData = expensesResponse.data;
             const monthList = monthlyData.map(d => d.Month);
             setMonths(monthList);
-
             let selectedMonthData = monthlyData.find(d => d.Month === lineSelectedMonth);
             if (!selectedMonthData) {
                 setLineSelectedMonth(monthList[0]);
@@ -150,7 +148,6 @@ function Trends() {
                     totalAmount: selectedMonthData[category],
                     amount: budgetsResponse.data.find(b => b.category === category)?.amount || 0,
                 }));
-	    console.log(categoryExpenditure);
             setLineChartData(transformLineData(categoryExpenditure));
             setDifferences(calculateDifference(categoryExpenditure));
         } catch (error) {
@@ -161,7 +158,6 @@ function Trends() {
     const createRadarChart = async () => {
 	try {
 	    const response = await axios.get(`http://127.0.0.1:5000/api/radartrends?user_id=${user_id}`);
-	    console.log(response.data);
 	    const monthList = response.data.map(d => d.Month);
 	    setMonths(monthList)
 	    if (radarSelectedMonth) {
@@ -170,7 +166,6 @@ function Trends() {
 		setRadarSelectedMonth(monthList[0])
 		setRadarChartData(transformRadarData(response.data.find(d => d.Month == monthList[0])));
 	    }
-	    console.log(radarChartData);
 	} catch (error) {
 	    console.error('Error fertching data: ', error);
 	}
@@ -198,7 +193,6 @@ function Trends() {
 	}
     }, [radarSelectedMonth]);
 
-    // if (!lineChartData && !radarChartData) return <div>No expenses logged...</div>;
 
     return (
         <div className="Trends">
