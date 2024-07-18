@@ -21,6 +21,11 @@ function Expenses() {
     const [canEditPermissions, setCanEditPermissions] = useState([]);
     const { user_id } = useParams();
     const ind_id = JSON.parse(localStorage.getItem('user')).ind_id;
+    const [isClicked, setIsClicked] = useState(false);
+
+    const handleSelectClicked = () => {
+	setIsClicked(true);
+    };
 
     const goDashboard = () => {
         navigate('/dashboard');
@@ -102,6 +107,7 @@ function Expenses() {
                 newExpenses[index] = { ...response.data, isNew: false, isEditing: false };
                 setExpenses(newExpenses);
                 setErrorMessage('');
+		fetchExpenses();
             } catch (error) {
                 console.error('There was an error adding the expense!', error);
                 setErrorMessage('There was an error adding the expense.');
@@ -174,6 +180,7 @@ function Expenses() {
 
     const handleFilterChange = (event) => {
         setFilterType(event.target.value);
+	setIsClicked(false);
         setFilterValue('');
         setLowerRange('');
         setUpperRange('');
@@ -198,8 +205,12 @@ function Expenses() {
                         onChange={e => setSearchTerm(e.target.value.toLowerCase())}
                     />
 
-                    <select className="common-style filter-dropdown" onChange={handleFilterChange}>
-                        <option value="">Filter by...</option>
+                    <select className="common-style filter-dropdown" onChange={handleFilterChange} onClick={handleSelectClicked}>
+			{!isClicked ? (
+			    <option value="">Filter By...</option>
+			) : (
+			    <option value="">None</option>
+			)}
                         <option value="amount">Amount Range</option>
                         <option value="category">Category</option>
                         <option value="month">Month</option>

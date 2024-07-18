@@ -208,6 +208,7 @@ def add_expense():
 # API endpoint to delete an expense
 @app.route('/api/expenses/<expense_id>', methods=['DELETE'])
 def delete_expense(expense_id):
+    print(expense_id)
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute('DELETE FROM expenses WHERE expense_id = ?', (expense_id,))
@@ -249,7 +250,7 @@ def authenticate_user():
         user_dict = dict(user)
         return jsonify({"status": "success", "user": user_dict}), 200
     else:
-        return jsonify({"status": "fail", "message": "Invalid credentials"}), 401
+        return jsonify({"status": "fail", "message": "Invalid credentials"}), 200
 
 
 @app.route('/api/username', methods=['GET'])
@@ -274,17 +275,10 @@ def generate_smart_suggestions():
     # 4. average amount budgeted for that category across all users
     spending_data = conn.execute(
         """
-<<<<<<< HEAD
-        SELECT
-            sg.category as category,
-            sg.amount,
-            AVG(ex.amount) as avg_spending,
-=======
         SELECT 
             sg.category as category, 
             sg.amount, 
             SUM(ex.amount)/3 as avg_spending,
->>>>>>> 1e865f75e5c83fe1e6308ed624624c87df741842
             sg_avg.amount as avg_budget
         FROM
             spending_goal sg
