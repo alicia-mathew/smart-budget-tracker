@@ -171,7 +171,7 @@ function Expenses() {
 
     return (
         <div className="expenses">
-            <header className="header">
+            <header className="expense-header">
                 <h1>Expense Management</h1>
             </header>
             <form id="expenseForm" onSubmit={e => e.preventDefault()}>

@@ -1,8 +1,7 @@
 from flask import Flask, request, jsonify, send_from_directory
 import sqlite3
 import os
-from flask_cors import CORS, cross_origin
-import time
+from flask_cors import CORS
 from datetime import datetime
 
 app = Flask(__name__, static_folder='../react_frontend/db-app/build')
@@ -15,6 +14,7 @@ def add_months(current_date, months_to_add):
                         (current_date.month + months_to_add - 1) % 12 + 1,
                         current_date.day, current_date.hour, current_date.minute, current_date.second)
     return new_date
+
 
 # Helper to return formatted monthly data
 def process_expense_data(results):
@@ -34,11 +34,13 @@ def process_expense_data(results):
 
     return monthly_data
 
+
 # Function to connect to the database
 def get_db_connection():
     conn = sqlite3.connect('production.db')
     conn.row_factory = sqlite3.Row
     return conn
+
 
 # function to get new id
 def get_next_id(table_name, pk):
@@ -48,10 +50,12 @@ def get_next_id(table_name, pk):
     print("NEXT ID", table_name, pk, next_id)
     return next_id
 
+
 # Additional function to get database cursor
 def get_db_conn_and_cursor():
     conn = sqlite3.connect('production.db')
     return conn, conn.cursor()
+
 
 # Serve React App
 @app.route('/', defaults={'path': ''})
@@ -62,6 +66,7 @@ def serve_react_app(path):
     else:
         return send_from_directory(app.static_folder, 'index.html')
 
+
 # API endpoint to fetch all users
 @app.route('/api/users', methods=['GET'])
 def get_users():
@@ -70,6 +75,7 @@ def get_users():
     conn.close()
     users_list = [dict(user) for user in users]
     return jsonify(users_list)
+
 
 # API endpoint to add a new user
 @app.route('/api/users', methods=['POST'])
@@ -144,6 +150,7 @@ def get_budgets():
     budget_list = [dict(budget) for budget in list(budgets)]
     return jsonify(budget_list)
 
+
 @app.route('/api/trends', methods=['GET'])
 def get_comp_data():
     user_id = request.args.get('user_id')
@@ -175,6 +182,7 @@ def get_expenses():
     expenses_list = [dict(expense) for expense in expenses]
     return jsonify(expenses_list)
 
+
 # API endpoint to add a new expense
 @app.route('/api/expenses', methods=['POST'])
 def add_expense():
@@ -197,6 +205,7 @@ def add_expense():
     conn.close()
     return jsonify(new_expense), 201
 
+
 # API endpoint to delete an expense
 @app.route('/api/expenses/<expense_id>', methods=['DELETE'])
 def delete_expense(expense_id):
@@ -206,6 +215,7 @@ def delete_expense(expense_id):
     conn.commit()
     conn.close()
     return jsonify({'status': 'success', 'expense_id': expense_id})
+
 
 # API endpoint to update an expense
 @app.route('/api/expenses/<expense_id>', methods=['PUT'])
@@ -218,11 +228,12 @@ def update_expense(expense_id):
 
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute('UPDATE expenses SET description = ?, amount = ?, category = ?, date = ? WHERE expense_id = ?', 
+    cursor.execute('UPDATE expenses SET description = ?, amount = ?, category = ?, date = ? WHERE expense_id = ?',
                    (description, amount, category, date, expense_id))
     conn.commit()
     conn.close()
     return jsonify({'status': 'success', 'expense_id': expense_id})
+
 
 # API endpoint for user authentication
 @app.route('/api/auth', methods=['POST'])
@@ -264,29 +275,29 @@ def generate_smart_suggestions():
     # 4. average amount budgeted for that category across all users
     spending_data = conn.execute(
         """
-        SELECT 
-            sg.category as category, 
-            sg.amount, 
+        SELECT
+            sg.category as category,
+            sg.amount,
             AVG(ex.amount) as avg_spending,
             sg_avg.amount as avg_budget
-        FROM 
+        FROM
             spending_goal sg
             LEFT JOIN expenses ex ON ex.user_id = sg.user_id
                                     AND sg.category = ex.category
                                     AND ex.date >= DATE('now', '-3 months')
             LEFT JOIN (
-                SELECT 
-                    category, 
+                SELECT
+                    category,
                     AVG(amount) AS amount
-                FROM 
+                FROM
                     spending_goal
-                GROUP BY 
+                GROUP BY
                     category
             ) sg_avg ON sg.category = sg_avg.category
-        WHERE 
+        WHERE
             sg.user_id = ?
         GROUP BY sg.category
-        """, 
+        """,
         (user_id,)
     ).fetchall()
 
@@ -317,8 +328,8 @@ def leaderboard():
     conn = get_db_connection()
     leaderboard = conn.execute(
         """
-        SELECT 
-            user.name, 
+        SELECT
+            user.name,
             SUM(sg.amount) - SUM(ex.amount) as net_savings
         FROM
             user
@@ -341,8 +352,8 @@ def get_user_groups():
 
     response = conn.execute(
         """
-        SELECT 
-            gm.group_id, 
+        SELECT
+            gm.group_id,
             user.name
         FROM
             group_member gm
@@ -366,7 +377,6 @@ def create_group():
     conn, cursor = get_db_conn_and_cursor()
     # create the group
     # insert into users
-    import random
     group_id, role_id, mem_id = get_next_id("groups", "group_id"), get_next_id("role", "role_id"), get_next_id("group_member", "mem_id")
     cursor.execute(
         """
@@ -403,18 +413,17 @@ def create_group():
     # commit changes
     conn.commit()
     return {"group_id": group_id, "name": group_name}
-    
+
 
 # API endpoint for adding a user to a group
 @app.route('/api/join_group', methods=['POST'])
 def join_group():
-    import random
     data = request.get_json()
     user_id = data['user_id']
     group_id = data['group_id']
     conn, cursor = get_db_conn_and_cursor()
     role_id, mem_id = get_next_id("role", "role_id"), get_next_id("group_member", "mem_id")
-    
+
     # add the user with no permissions by default
     # create a role
     cursor.execute(
@@ -447,11 +456,11 @@ def get_group_permissions():
 
     permissions = conn.execute(
         """
-        SELECT 
-            user.name, 
-            role.create_sg, 
-            role.modify_exp, 
-            role.manage_mem, 
+        SELECT
+            user.name,
+            role.create_sg,
+            role.modify_exp,
+            role.manage_mem,
             role.add_exp,
             role.role_id
         FROM
@@ -476,14 +485,14 @@ def modify_group():
     for user in data:
         cursor.execute(
             """
-            UPDATE 
-                role 
-            SET 
-                create_sg = ?, 
-                modify_exp = ?, 
-                manage_mem = ?, 
-                add_exp = ? 
-            WHERE 
+            UPDATE
+                role
+            SET
+                create_sg = ?,
+                modify_exp = ?,
+                manage_mem = ?,
+                add_exp = ?
+            WHERE
                 role_id = ?
             """,
             (user["create_sg"], user["modify_exp"], user["manage_mem"], user["add_exp"], user["role_id"])
@@ -491,6 +500,7 @@ def modify_group():
     conn.commit()
 
     return "Successfully modified permissions"
+
 
 # API endpoint for checking if the user has permission to manage group permissions
 @app.route('/api/can_modify_group_permissions', methods=['POST'])
@@ -514,6 +524,7 @@ def can_modify_group():
         (user_id, group_id)
     ).fetchone()
     return dict(is_admin)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
