@@ -10,8 +10,6 @@ function LogBudgets() {
 	budget_id : '',
 	category : '',
 	value : '',
-	startDate : '',
-	endDate : '',
 	isNew : true,
 	isEditing : false
     }]);
@@ -31,8 +29,6 @@ function LogBudgets() {
 	    budget_id: budget.spending_id,
 	    category: budget.category,
 	    value: budget.amount.toString(), // Convert amount to string if necessary
-	    startDate: new Date(budget.start_date).toISOString().split('T')[0],
-	    endDate: new Date(budget.end_date).toISOString().split('T')[0],
 	    isNew: false,
 	    isEditing: false
 	}));
@@ -41,8 +37,6 @@ function LogBudgets() {
 		budget_id : '',
 		category : '',
 		value : '',
-		startDate : '',
-		endDate : '',
 		isNew : true,
 		isEditing : false
 	    }]);
@@ -56,8 +50,6 @@ function LogBudgets() {
 		    budget_id : '',
 		    category : '',
 		    value : '',
-		    startDate : '',
-		    endDate : '',
 		    isNew : true,
 		    isEditing : false
 		}]);

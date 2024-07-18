@@ -295,7 +295,26 @@ for category, amount in spending_goal_group.items():
     spending_goal_id += 1
 
 # create 3 expeses for remaining users to populate leaderboard
+for user_id in ids:
+    if user_id == 12:
+        continue
+    # create personal spending goal
+    c.execute("""
+        INSERT INTO spending_goal (spending_id, amount, category, user_id)
+        VALUES (?, ?, ?, ?)
+        """, (spending_goal_id, 1000, "Personal", user_id))
 
+    # create 3 expenses
+    for i in range(3):
+        c.execute("""
+            INSERT INTO expenses (expense_id, amount, category, date, user_id, description)
+            VALUES (?, ?, ?, ?, ?, ?)
+            """, (expense_id, random.randint(1, 200), "Personal", expense_date, user_id, description))
+        expense_id += 1
+
+    spending_goal_id += 1
+
+    
 
 
 def print_table_contents(table_name):
@@ -309,6 +328,7 @@ def print_table_contents(table_name):
 tables = ["user", "individual", "groups", "role", "group_member", "expenses", "spending_goal"]
 for table in tables:
     print_table_contents(table)
+    pass
 
 conn.commit()
 conn.close()

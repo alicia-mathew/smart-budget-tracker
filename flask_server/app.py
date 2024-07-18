@@ -45,7 +45,6 @@ def get_next_id(table_name, pk):
     conn = get_db_connection()
     next_id = conn.execute(f"""SELECT MAX({pk}) FROM {table_name}""").fetchone()
     next_id = dict(next_id)[f"MAX({pk})"] + 1
-    print("NEXT ID", table_name, pk, next_id)
     return next_id
 
 # Additional function to get database cursor
@@ -267,7 +266,7 @@ def generate_smart_suggestions():
         SELECT 
             sg.category as category, 
             sg.amount, 
-            AVG(ex.amount) as avg_spending,
+            SUM(ex.amount)/3 as avg_spending,
             sg_avg.amount as avg_budget
         FROM 
             spending_goal sg
@@ -315,19 +314,60 @@ def generate_smart_suggestions():
 @app.route('/api/leaderboard', methods=['GET'])
 def leaderboard():
     conn = get_db_connection()
+    user_id = request.args.get('user_id')
+    
     leaderboard = conn.execute(
         """
+        WITH 
+        recent_expenses AS (
+            SELECT 
+                ex.user_id,
+                SUM(ex.amount) AS total_expenses
+            FROM 
+                expenses ex
+            WHERE 
+                ex.date >= datetime('now', '-1 month')
+            GROUP BY 
+                ex.user_id
+        ),
+        total_spending_goals AS (
+            SELECT 
+                sg.user_id,
+                SUM(sg.amount) AS total_goals
+            FROM 
+                spending_goal sg
+            GROUP BY 
+                sg.user_id
+        ),
+        relevant_individuals AS (
+            SELECT DISTINCT
+                gm.ind_id
+            FROM
+                group_member gm
+            WHERE
+                gm.group_id IN (
+                    SELECT 
+                        gm.group_id
+                    FROM
+                        group_member gm
+                    LEFT JOIN 
+                        user ON gm.group_id = user.user_id
+                    WHERE
+                        gm.ind_id = ?
+                )
+        )
         SELECT 
-            user.name, 
-            SUM(sg.amount) - SUM(ex.amount) as net_savings
-        FROM
-            user
-            LEFT JOIN expenses ex on ex.user_id = user.user_id
-            LEFT JOIN spending_goal sg on sg.user_id = user.user_id
-        GROUP BY user.name
-        HAVING net_savings is not null
-        ORDER BY net_savings DESC
-        """
+            u.name, 
+            COALESCE(tg.total_goals, 0) - COALESCE(re.total_expenses, 0) AS net_savings
+        FROM 
+            relevant_individuals ri
+            LEFT JOIN user u ON ri.ind_id = u.user_id
+            LEFT JOIN recent_expenses re ON u.user_id = re.user_id
+            LEFT JOIN total_spending_goals tg ON u.user_id = tg.user_id
+        GROUP BY u.name
+        ORDER BY net_savings DESC;
+        """,
+        (user_id,)
     ).fetchall()
 
     return jsonify([dict(category) for category in leaderboard])
