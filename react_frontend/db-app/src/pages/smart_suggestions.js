@@ -33,9 +33,9 @@ function SmartSuggestions() {
             <table>
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>Category</th>
-                        <th>Suggestion</th>
+                        <th className="table-header"></th>
+                        <th className="table-header">Category</th>
+                        <th className="table-header">Suggestion</th>
                     </tr>
                 </thead>
                 <tbody className='expense-list'>
