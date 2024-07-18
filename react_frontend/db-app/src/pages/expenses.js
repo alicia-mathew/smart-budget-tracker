@@ -18,7 +18,9 @@ function Expenses() {
     const [filterYear, setFilterYear] = useState('');
     const [months, setMonths] = useState([]);
     const [years, setYears] = useState([]);
+    const [canEditPermissions, setCanEditPermissions] = useState([]);
     const { user_id } = useParams();
+    const ind_id = JSON.parse(localStorage.getItem('user')).ind_id;
 
     const goDashboard = () => {
         navigate('/dashboard');
@@ -28,6 +30,7 @@ function Expenses() {
     useEffect(() => {
         fetchExpenses();
         fetchCategories();
+        fetchCanEdit();
     }, []);
 
     const fetchCategories = async () => {
@@ -53,6 +56,15 @@ function Expenses() {
             console.error('There was an error fetching the expenses!', error);
         }
     };
+
+    const fetchCanEdit = async () => {
+        try {
+            const response = await axios.post(`http://127.0.0.1:5000/api/get_expense_permissions`, {"user_id": ind_id, "group_id": user_id});
+            setCanEditPermissions(response.data);
+        } catch (error) {
+            console.error('There was an error fetching your editing permissions!', error);
+        }
+    }
 
     const handleInputChange = (index, event) => {
         const { name, value } = event.target;
@@ -256,7 +268,9 @@ function Expenses() {
                         <div className="table-header">Amount ($)</div>
                         <div className="table-header">Category</div>
                         <div className="table-header">Date</div>
-                        <div className="table-header">Actions</div>
+                        {canEditPermissions.modify_exp ? (
+                            <div className="table-header">Actions</div>
+                        ): null}
                     </div>
 
                     {filterExpenses().map((expense, index) => (
@@ -303,17 +317,21 @@ function Expenses() {
                                     <div>{expense.amount}</div>
                                     <div>{expense.category}</div>
                                     <div>{expense.date}</div>
-                                    <div className="buttons">
-                                        <button className="action-button" onClick={() => editExpense(index)}>Edit</button>
-                                        <button className="action-button" onClick={() => deleteExpense(index)}>Delete</button>
-                                    </div>
+                                    {canEditPermissions.modify_exp ? (
+                                        <div className="buttons">
+                                            <button className="action-button" onClick={() => editExpense(index)}>Edit</button>
+                                            <button className="action-button" onClick={() => deleteExpense(index)}>Delete</button>
+                                        </div>
+                                    ): null}
                                 </>
                             )}
                         </div>
                     ))}
-                    <div className="table-row">
-                        <button className="action-button" onClick={addRow}>+</button>
-                    </div>
+                    {canEditPermissions.add_exp ? (
+                        <div className="table-row">
+                            <button className="action-button" onClick={addRow}>+</button>
+                        </div>
+                    ): null}
                     {errorMessage && <div className="error-message">{errorMessage}</div>}
                 </div>
             </form>
