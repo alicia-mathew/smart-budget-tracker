@@ -553,7 +553,58 @@ def can_modify_group():
         """,
         (user_id, group_id)
     ).fetchone()
+    print("IS ADMIN", dict(is_admin))
     return dict(is_admin)
+
+# API endpoint for checking if the user has permission to add and edit expenses
+@app.route('/api/get_expense_permissions', methods=['POST'])
+def get_expense_permissions():
+    data = request.get_json()
+    user_id = data['user_id']
+    group_id = data['group_id']
+    if str(user_id) == str(group_id):
+        return {"modify_exp": 1, "add_exp": 1}
+    
+    conn = get_db_connection()
+    can_edit = conn.execute(
+        """
+        SELECT
+            role.modify_exp, role.add_exp
+        FROM
+            role
+            LEFT JOIN group_member gm on gm.role_id = role.role_id
+        WHERE
+            gm.ind_id = ?
+            AND gm.group_id = ?
+        """,
+        (user_id, group_id)
+    ).fetchone()
+    return dict(can_edit)
+
+# API endpoint for checking if the user has permission to add and edit spending goals
+@app.route('/api/get_sg_permissions', methods=['POST'])
+def get_sg_permissions():
+    data = request.get_json()
+    user_id = data['user_id']
+    group_id = data['group_id']
+    if str(user_id) == str(group_id):
+        return {"create_sg": 1}
+    
+    conn = get_db_connection()
+    can_edit = conn.execute(
+        """
+        SELECT
+            role.create_sg
+        FROM
+            role
+            LEFT JOIN group_member gm on gm.role_id = role.role_id
+        WHERE
+            gm.ind_id = ?
+            AND gm.group_id = ?
+        """,
+        (user_id, group_id)
+    ).fetchone()
+    return dict(can_edit)
 
 if __name__ == '__main__':
     app.run(debug=True)
