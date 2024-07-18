@@ -10,18 +10,21 @@ function LogBudgets() {
 	budget_id : '',
 	category : '',
 	value : '',
-	startDate : '',
-	endDate : '',
 	isNew : true,
 	isEditing : false
     }]);
     const [budget, setBudget] = useState([]);
     const [errorMessage, setErrorMessage] = useState('');
+	const [canEditPermissions, setCanEditPermissions] = useState([]);
+	const ind_id = JSON.parse(localStorage.getItem('user')).ind_id;
  
 
     const { user_id } = useParams();
 
-    useEffect(() => {fetchBudget();}, []);
+    useEffect(() => {
+		fetchBudget();
+		fetchCanEdit();
+	}, []);
 
     const fetchBudget = async () => {
 	const response = await axios.get(`http://127.0.0.1:5000/api/budget?user_id=${user_id}`);
@@ -31,8 +34,6 @@ function LogBudgets() {
 	    budget_id: budget.spending_id,
 	    category: budget.category,
 	    value: budget.amount.toString(), // Convert amount to string if necessary
-	    startDate: new Date(budget.start_date).toISOString().split('T')[0],
-	    endDate: new Date(budget.end_date).toISOString().split('T')[0],
 	    isNew: false,
 	    isEditing: false
 	}));
@@ -41,12 +42,19 @@ function LogBudgets() {
 		budget_id : '',
 		category : '',
 		value : '',
-		startDate : '',
-		endDate : '',
 		isNew : true,
 		isEditing : false
 	    }]);
     };
+
+	const fetchCanEdit = async () => {
+        try {
+            const response = await axios.post(`http://127.0.0.1:5000/api/get_sg_permissions`, {"user_id": ind_id, "group_id": user_id});
+            setCanEditPermissions(response.data);
+        } catch (error) {
+            console.error('There was an error fetching your editing permissions!', error);
+        }
+    }
 
     const addRow = () => {
 	const lastRow = rows[rows.length - 1];
@@ -56,8 +64,6 @@ function LogBudgets() {
 		    budget_id : '',
 		    category : '',
 		    value : '',
-		    startDate : '',
-		    endDate : '',
 		    isNew : true,
 		    isEditing : false
 		}]);
@@ -139,7 +145,9 @@ function LogBudgets() {
 		<div className="table-row">
 		    <div className="table-header">Categories</div>
 		    <div className="table-header">Budget</div>
-		    <div className="table-header">Actions</div>
+			{canEditPermissions.create_sg ? (
+				<div className="table-header">Actions</div>
+			): null}
 		</div>
 		{rows.map((row, index) => (
 		    <div className="table-row" key={index}>
@@ -181,14 +189,16 @@ function LogBudgets() {
 				<>
 				    <div>{row.category}</div>
 				    <div>{row.value}</div>
-				    <div className="buttons">
-					<button onClick={() => {editBudget(index);}}>
-					    Edit
-					</button>
-					<button onClick={() => {deleteBudget(index);}}>
-					    Delete
-					</button>
-				    </div>
+					{canEditPermissions.create_sg ? (
+				    	<div className="buttons">
+							<button onClick={() => {editBudget(index);}}>
+								Edit
+							</button>
+							<button onClick={() => {deleteBudget(index);}}>
+								Delete
+							</button>
+				    	</div>
+					): null}
 				</>
 				)}
 			    </>
@@ -196,9 +206,11 @@ function LogBudgets() {
 		    </div>
 
 		))}
-		<div className="table-row">
-		    <button className="button-1" onClick={() => {addRow();}}>+</button>
-		</div>
+		{canEditPermissions.create_sg ? (
+			<div className="table-row">
+				<button className="button-1" onClick={() => {addRow();}}>+</button>
+			</div>
+		): null}
 		{errorMessage && <div className="error-message">{errorMessage}</div>}	
 	    </div>
 		<br></br>

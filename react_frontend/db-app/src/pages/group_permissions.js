@@ -27,7 +27,7 @@ function Groups() {
     const fetchCanEdit = async () => {
         try {
             const response = await axios.post(`http://127.0.0.1:5000/api/can_modify_group_permissions`, {"user_id": user_id, "group_id": group_id});
-            setCanEditPermissions(response.data.Manage_mem);
+            setCanEditPermissions(response.data.manage_mem);
         } catch (error) {
             console.error('There was an error determining if you are an admin!', error);
         }
@@ -69,7 +69,7 @@ function Groups() {
                         <tr>
                             <th>Group Member</th>
                             <th>Can Manage Group Member Permissions</th>
-                            <th>Can Create Group Spending Goal</th>
+                            <th>Can Modify Group Spending Goals</th>
                             <th>Can Add Group Expense</th>
                             <th>Can Modify Group Expense</th>
                         </tr>
@@ -78,7 +78,7 @@ function Groups() {
                         {permissions.map((permission, index) => (
                             <tr>
                                 <td>{permission.name}</td>
-                                <td><input type='checkbox' checked={permission.Manage_mem} onChange={handleEditChange(index, 'Manage_mem')}></input></td>
+                                <td><input type='checkbox' checked={permission.manage_mem} onChange={handleEditChange(index, 'manage_mem')}></input></td>
                                 <td><input type='checkbox' checked={permission.create_sg} onChange={handleEditChange(index, 'create_sg')}></input></td>
                                 <td><input type='checkbox' checked={permission.add_exp} onChange={handleEditChange(index, 'add_exp')}></input></td>
                                 <td><input type='checkbox' checked={permission.modify_exp} onChange={handleEditChange(index, 'modify_exp')}></input></td>

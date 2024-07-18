@@ -47,7 +47,6 @@ def get_next_id(table_name, pk):
     conn = get_db_connection()
     next_id = conn.execute(f"""SELECT MAX({pk}) FROM {table_name}""").fetchone()
     next_id = dict(next_id)[f"MAX({pk})"] + 1
-    print("NEXT ID", table_name, pk, next_id)
     return next_id
 
 
@@ -275,10 +274,17 @@ def generate_smart_suggestions():
     # 4. average amount budgeted for that category across all users
     spending_data = conn.execute(
         """
+<<<<<<< HEAD
         SELECT
             sg.category as category,
             sg.amount,
             AVG(ex.amount) as avg_spending,
+=======
+        SELECT 
+            sg.category as category, 
+            sg.amount, 
+            SUM(ex.amount)/3 as avg_spending,
+>>>>>>> 1e865f75e5c83fe1e6308ed624624c87df741842
             sg_avg.amount as avg_budget
         FROM
             spending_goal sg
@@ -326,19 +332,60 @@ def generate_smart_suggestions():
 @app.route('/api/leaderboard', methods=['GET'])
 def leaderboard():
     conn = get_db_connection()
+    user_id = request.args.get('user_id')
+    
     leaderboard = conn.execute(
         """
-        SELECT
-            user.name,
-            SUM(sg.amount) - SUM(ex.amount) as net_savings
-        FROM
-            user
-            LEFT JOIN expenses ex on ex.user_id = user.user_id
-            LEFT JOIN spending_goal sg on sg.user_id = user.user_id
-        GROUP BY user.name
-        HAVING net_savings is not null
-        ORDER BY net_savings DESC
-        """
+        WITH 
+        recent_expenses AS (
+            SELECT 
+                ex.user_id,
+                SUM(ex.amount) AS total_expenses
+            FROM 
+                expenses ex
+            WHERE 
+                ex.date >= datetime('now', '-1 month')
+            GROUP BY 
+                ex.user_id
+        ),
+        total_spending_goals AS (
+            SELECT 
+                sg.user_id,
+                SUM(sg.amount) AS total_goals
+            FROM 
+                spending_goal sg
+            GROUP BY 
+                sg.user_id
+        ),
+        relevant_individuals AS (
+            SELECT DISTINCT
+                gm.ind_id
+            FROM
+                group_member gm
+            WHERE
+                gm.group_id IN (
+                    SELECT 
+                        gm.group_id
+                    FROM
+                        group_member gm
+                    LEFT JOIN 
+                        user ON gm.group_id = user.user_id
+                    WHERE
+                        gm.ind_id = ?
+                )
+        )
+        SELECT 
+            u.name, 
+            COALESCE(tg.total_goals, 0) - COALESCE(re.total_expenses, 0) AS net_savings
+        FROM 
+            relevant_individuals ri
+            LEFT JOIN user u ON ri.ind_id = u.user_id
+            LEFT JOIN recent_expenses re ON u.user_id = re.user_id
+            LEFT JOIN total_spending_goals tg ON u.user_id = tg.user_id
+        GROUP BY u.name
+        ORDER BY net_savings DESC;
+        """,
+        (user_id,)
     ).fetchall()
 
     return jsonify([dict(category) for category in leaderboard])
@@ -523,7 +570,59 @@ def can_modify_group():
         """,
         (user_id, group_id)
     ).fetchone()
+    print("IS ADMIN", dict(is_admin))
     return dict(is_admin)
+
+
+# API endpoint for checking if the user has permission to add and edit expenses
+@app.route('/api/get_expense_permissions', methods=['POST'])
+def get_expense_permissions():
+    data = request.get_json()
+    user_id = data['user_id']
+    group_id = data['group_id']
+    if str(user_id) == str(group_id):
+        return {"modify_exp": 1, "add_exp": 1}
+
+    conn = get_db_connection()
+    can_edit = conn.execute(
+        """
+        SELECT
+            role.modify_exp, role.add_exp
+        FROM
+            role
+            LEFT JOIN group_member gm on gm.role_id = role.role_id
+        WHERE
+            gm.ind_id = ?
+            AND gm.group_id = ?
+        """,
+        (user_id, group_id)
+    ).fetchone()
+    return dict(can_edit)
+
+# API endpoint for checking if the user has permission to add and edit spending goals
+@app.route('/api/get_sg_permissions', methods=['POST'])
+def get_sg_permissions():
+    data = request.get_json()
+    user_id = data['user_id']
+    group_id = data['group_id']
+    if str(user_id) == str(group_id):
+        return {"create_sg": 1}
+    
+    conn = get_db_connection()
+    can_edit = conn.execute(
+        """
+        SELECT
+            role.create_sg
+        FROM
+            role
+            LEFT JOIN group_member gm on gm.role_id = role.role_id
+        WHERE
+            gm.ind_id = ?
+            AND gm.group_id = ?
+        """,
+        (user_id, group_id)
+    ).fetchone()
+    return dict(can_edit)
 
 
 if __name__ == '__main__':

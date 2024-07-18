@@ -14,7 +14,7 @@ function Leaderboard() {
 
     const fetchLeaders = async () => {
         try {
-            const leaderboard_response = await axios.get(`http://127.0.0.1:5000/api/leaderboard`);
+            const leaderboard_response = await axios.get(`http://127.0.0.1:5000/api/leaderboard?user_id=${user.ind_id}`);
             setLeaders(leaderboard_response.data);
         } catch (error) {
             console.error('There was an error fetching the leaderboard!', error);
@@ -28,7 +28,7 @@ function Leaderboard() {
 
     return (
         <div>
-            <h1>Savings Leaderboard</h1>
+            <h1>Monthly Savings Leaderboard</h1>
             <table className='expense-list'>
                 <thead>
                     <tr>
