@@ -27,8 +27,12 @@ function Leaderboard() {
     };
 
     return (
-        <div>
-            <h1>Monthly Savings Leaderboard</h1>
+        <div className="leaderboard-table"> 
+            <header className="header">
+                <h1>Monthly Savings Leaderboard</h1>
+        	</header>
+			<h3 className="intro" style={{ textAlign: 'center' }}>Welcome to your group savings leaderboard!</h3>
+            <h3 className="intro" style={{ textAlign: 'center' }}>Check out who the top saver is.</h3>
             <table className='expense-list'>
                 <thead>
                     <tr>

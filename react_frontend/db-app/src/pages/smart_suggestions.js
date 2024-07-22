@@ -23,33 +23,37 @@ function SmartSuggestions() {
     }
 
     const goDashboard = () => {
-	navigate('/dashboard');
-	navigate(0); // Add navigate(0) to make sure the navigatee page is refreshed once you go there
+        navigate('/dashboard');
+        navigate(0); // Add navigate(0) to make sure the navigatee page is refreshed once you go there
     };
     
     return (
-        <div>
-            <h1>Smart Suggestions</h1>
-            <table>
-                <thead>
-                    <tr>
-                        <th className="table-header"></th>
-                        <th className="table-header">Category</th>
-                        <th className="table-header">Suggestion</th>
-                    </tr>
-                </thead>
-                <tbody className='expense-list'>
-                    {suggestions.map((suggestion, index) => (
+        <div className="smart-suggestions">
+            <header className="header">
+                <h1>Smart Suggestions</h1>
+            </header>
+            <div className="table-section">
+                <table>
+                    <thead>
                         <tr>
-                            <td>{index+1}</td>
-                            <td>{suggestion.category}</td>
-                            <td>{suggestion.text}</td>
+                            <th className="table-header"></th>
+                            <th className="table-header">Category</th>
+                            <th className="table-header">Suggestion</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
-	    <br/>
-	    <button className="dashboard-button" onClick={() => {goDashboard();}}>Return to Dashboard</button>
+                    </thead>
+                    <tbody className='expense-list'>
+                        {suggestions.map((suggestion, index) => (
+                            <tr key={index}>
+                                <td>{index + 1}</td>
+                                <td>{suggestion.category}</td>
+                                <td>{suggestion.text}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+            <br/>
+            <button className="dashboard-button" onClick={goDashboard}>Return to Dashboard</button>
         </div>
     );
 }

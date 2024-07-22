@@ -1,28 +1,63 @@
+body {
+  background-color: #1a1a1a; /* Change the background color of the entire page if needed */
+}
+
 .expenses {
-  background-color: #3c3f41;
-  padding: 50px;
-  border-radius: 14px;
-  box-shadow: 0 4px 20px rgba(10, 0, 0, 0.2);
-  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  max-width: 1000px;
   width: 100%;
-  margin: auto;
+  align-self: center;
+}
+
+.expense-list {
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 20px; /* Add space before the table */
+}
+
+.expense-list table {
+  width: 100%;
+  max-width: 800px; /* Fix the width */
+  margin: auto; /* Center the table */
+  border-collapse: collapse;
+  text-align: center; /* Center-align everything in the table */
+}
+
+.expense-list th, .expense-list td {
+  padding: 10px;
+  /* Remove the border property */
+  border: none; 
+}
+
+.expense-list th {
+  background-color: #3c3c3c;
+}
+
+.expense-list td {
+  background-color: transparent; /* Remove background color */
 }
 
 .expense-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  background-color: #1e1e1e;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  text-align: center; /* Center the heading */
   margin-bottom: 20px;
 }
 
-h1, h2, h3 {
-  text-align: center;
+
+h1 {
+  font-size: 36px;
+  font-weight: bold;
+}
+
+h3 {
+  font-size: 18px;
+  font-weight: normal;
   margin-bottom: 20px;
 }
+
 
 .common-style {
   border: 0.2px solid white;
@@ -70,23 +105,15 @@ h1, h2, h3 {
   justify-content: space-between;
   align-items: center;
   padding: 10px 0;
-  border-bottom: 1px solid #444;
+  border-bottom: 1px solid #444; /* Optional: adjust or remove this line if you don't want any bottom border */
 }
 
 .table-header {
   flex: 1;
   text-align: center; /* Center align the header text */
   font-weight: bold;
-  border-right: 1px solid #000000;
-  border-left: 1px solid #000000;
-}
-
-.table-header:first-child {
-  border-left: none;
-}
-
-.table-header:last-child {
-  border-right: none;
+  /* Remove the border properties */
+  border: none;
 }
 
 .table-row input[type="text"], .table-row input[type="date"], .table-row select {
@@ -128,22 +155,16 @@ h1, h2, h3 {
 }
 
 .table-row:nth-child(even) {
-  background-color: #333;
+  background-color: transparent;
 }
 
 .table-row:nth-child(odd) {
-  background-color: #3c3f41;
+  background-color: transparent;
 }
 
 *:focus {
   outline: none;
 }
-
-/* .action-button {
-  display: flex;
-  justify-content: flex-end;
-  color: #fff;
-} */
 
 .filter-section {
   display: flex;
@@ -167,4 +188,10 @@ h1, h2, h3 {
   background-color: #3c3f41;
   width: fit-content;
   align-self: center;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
 }

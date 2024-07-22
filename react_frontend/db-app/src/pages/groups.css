@@ -10,15 +10,26 @@ html, body {
   #root {
     height: 100%;
   }
+
+  .groups-table {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    max-width: 1000px;
+    width: 100%;
+    align-self: center;
+  }
   
-  .expenses {
+  /* .expenses {
     display: flex;
     flex-direction: column;
     min-height: 100%;
     padding: 20px;
     box-sizing: border-box;
   }
-  
+   */
   .header {
     display: flex;
     justify-content: space-between;
@@ -132,3 +143,39 @@ html, body {
     width: fit-content;
     align-self: center;
   }
+
+  /* Common styles for buttons and input fields */
+.common-style {
+  border-radius: 14px;
+  border: 0.2px solid white;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  padding: 5px 10px;
+  box-sizing: border-box;
+  display: inline-block;
+  width: auto; /* Adjust width as needed */
+  margin: 5px; /* Adds space between filter inputs */
+  text-align: center;
+}
+
+.common-style:hover {
+  background-color: #333;
+}
+
+.action-button {
+  padding: 5px 10px;
+  border: 0.2px solid white;
+  color: #fff;
+  border-radius: 14px;
+  cursor: pointer;
+  align-self: center;
+  text-align: center;
+  transition: background-color 0.3s ease;
+  width: fit-content;
+  background-color: #3c3f41;
+}
+
+.action-button:hover {
+  background-color: #333;
+}

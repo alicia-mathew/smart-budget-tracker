@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './group_permissions.css';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 function Groups() {
     const user = JSON.parse(localStorage.getItem('user'));
-    const user_id = user.ind_id
+    const user_id = user.ind_id;
     const [permissions, setPermissions] = useState([]);
     const [canEditPermissions, setCanEditPermissions] = useState(false);
     const { group_id } = useParams();
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchPermissions();
@@ -60,10 +61,23 @@ function Groups() {
         setPermissions(updatedPermissions);
     };
 
+    const goToGroups = () => {
+        navigate('/groups');
+        navigate(0); // Add navigate(0) to make sure the navigated page is refreshed once you go there
+    };
+
+    const goDashboard = () => {
+        navigate('/dashboard');
+        navigate(0); // Add navigate(0) to make sure the navigated page is refreshed once you go there
+    };
+
     if (canEditPermissions) {
         return (
-            <div>
-                <h1>Manage Group Permissions</h1>
+            <div className="permissions-table">
+                <header className="header">
+                <h1>Group Permissions Management</h1>
+        	</header>
+			<h3 className="intro" style={{ textAlign: 'center' }}>Manage your group permissions.</h3>
                 <table className='expense-list' id='permission-list'>
                     <thead>
                         <tr>
@@ -76,7 +90,7 @@ function Groups() {
                     </thead>
                     <tbody>
                         {permissions.map((permission, index) => (
-                            <tr>
+                            <tr key={index}>
                                 <td>{permission.name}</td>
                                 <td><input type='checkbox' checked={permission.manage_mem} onChange={handleEditChange(index, 'manage_mem')}></input></td>
                                 <td><input type='checkbox' checked={permission.create_sg} onChange={handleEditChange(index, 'create_sg')}></input></td>
@@ -87,7 +101,12 @@ function Groups() {
                         ))}
                     </tbody>
                 </table>
-                <button onClick={savePermissions}>Save Permissions</button>
+                <br></br>
+                <button onClick={savePermissions} className="action-button">Save Permissions</button>
+                <br></br>
+                <br/>
+                <button onClick={goToGroups} className="action-button">Back to Group Management</button>
+                <button onClick={goDashboard} className="action-button">Return to Dashboard</button>
             </div>
         );
     } else {
@@ -95,10 +114,12 @@ function Groups() {
             <div>
                 <h1>Manage Group Permissions</h1>
                 <p>You do not have permission to manage permissions for this group!</p>
+                <div className="button-group">
+                    <button onClick={goToGroups} className="action-button">Back to Group Management</button>
+                    <button onClick={goDashboard} className="action-button">Return to Dashboard</button>
+                </div>
             </div>
-        )
+        );
     }
-
-   
 }
 export default Groups;

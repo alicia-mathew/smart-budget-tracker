@@ -24,7 +24,7 @@ function Expenses() {
     const [isClicked, setIsClicked] = useState(false);
 
     const handleSelectClicked = () => {
-	setIsClicked(true);
+        setIsClicked(true);
     };
 
     const goDashboard = () => {
@@ -64,7 +64,7 @@ function Expenses() {
 
     const fetchCanEdit = async () => {
         try {
-            const response = await axios.post(`http://127.0.0.1:5000/api/get_expense_permissions`, {"user_id": ind_id, "group_id": user_id});
+            const response = await axios.post(`http://127.0.0.1:5000/api/get_expense_permissions`, { "user_id": ind_id, "group_id": user_id });
             setCanEditPermissions(response.data);
         } catch (error) {
             console.error('There was an error fetching your editing permissions!', error);
@@ -107,7 +107,7 @@ function Expenses() {
                 newExpenses[index] = { ...response.data, isNew: false, isEditing: false };
                 setExpenses(newExpenses);
                 setErrorMessage('');
-		fetchExpenses();
+                fetchExpenses();
             } catch (error) {
                 console.error('There was an error adding the expense!', error);
                 setErrorMessage('There was an error adding the expense.');
@@ -162,7 +162,6 @@ function Expenses() {
             }
 
             if (filterType === 'amount') {
-                if (lowerRange > upperRange) {}
                 matchesFilter = expense.amount >= lowerRange && expense.amount <= upperRange;
             } else if (filterType === 'category') {
                 matchesFilter = expense.category === filterValue;
@@ -180,7 +179,7 @@ function Expenses() {
 
     const handleFilterChange = (event) => {
         setFilterType(event.target.value);
-	setIsClicked(false);
+        setIsClicked(false);
         setFilterValue('');
         setLowerRange('');
         setUpperRange('');
@@ -190,13 +189,12 @@ function Expenses() {
 
     return (
         <div className="expenses">
-            <header className="expense-header">
+            <header className="header">
                 <h1>Expense Management</h1>
             </header>
+            <h3 className="intro" style={{ textAlign: 'center' }}>Welcome to your expense management sheet!</h3>
+            <h3 className="intro" style={{ textAlign: 'center' }}>You can add, delete, edit, search, and filter your expenses.</h3>
             <form id="expenseForm" onSubmit={e => e.preventDefault()}>
-                <h3 style={{ textAlign: 'center' }}>Welcome to your expense management sheet!</h3>
-                <h3 style={{ textAlign: 'center' }}>You can add, delete, edit, search, and filter your expenses.</h3>
-
                 <div className="filter-section">
                     <input
                         className="common-style search-bar"
@@ -206,11 +204,11 @@ function Expenses() {
                     />
 
                     <select className="common-style filter-dropdown" onChange={handleFilterChange} onClick={handleSelectClicked}>
-			{!isClicked ? (
-			    <option value="">Filter By...</option>
-			) : (
-			    <option value="">None</option>
-			)}
+                        {!isClicked ? (
+                            <option value="">Filter By...</option>
+                        ) : (
+                            <option value="">None</option>
+                        )}
                         <option value="amount">Amount Range</option>
                         <option value="category">Category</option>
                         <option value="month">Month</option>
@@ -281,7 +279,7 @@ function Expenses() {
                         <div className="table-header">Date</div>
                         {canEditPermissions.modify_exp ? (
                             <div className="table-header">Actions</div>
-                        ): null}
+                        ) : null}
                     </div>
 
                     {filterExpenses().map((expense, index) => (
@@ -333,7 +331,7 @@ function Expenses() {
                                             <button className="action-button" onClick={() => editExpense(index)}>Edit</button>
                                             <button className="action-button" onClick={() => deleteExpense(index)}>Delete</button>
                                         </div>
-                                    ): null}
+                                    ) : null}
                                 </>
                             )}
                         </div>
@@ -342,12 +340,12 @@ function Expenses() {
                         <div className="table-row">
                             <button className="action-button" onClick={addRow}>+</button>
                         </div>
-                    ): null}
+                    ) : null}
                     {errorMessage && <div className="error-message">{errorMessage}</div>}
                 </div>
             </form>
             <br />
-            <button className="dashboard" onClick={goDashboard}>Return to Dashboard</button>
+            <button className="dashboard-button" onClick={goDashboard}>Return to Dashboard</button>
         </div>
     );
 }
