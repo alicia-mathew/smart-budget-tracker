@@ -314,9 +314,6 @@ for user_id in ids:
 
     spending_goal_id += 1
 
-    
-
-
 def print_table_contents(table_name):
     c.execute(f"SELECT * FROM {table_name}")
     rows = c.fetchall()

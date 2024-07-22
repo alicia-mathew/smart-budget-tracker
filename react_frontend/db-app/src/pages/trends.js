@@ -196,6 +196,11 @@ function Trends() {
 
     return (
         <div className="Trends">
+            <header className="header">
+                <h1>Visualize Spending Patterns</h1>
+        	</header>
+			<h3 className="intro" style={{ textAlign: 'center' }}>Welcome to your trends page!</h3>
+            <h3 className="intro" style={{ textAlign: 'center' }}>View and track your spending patterns alongside your budgets for each month.</h3>
             <div className="content">
                 <div className="section">
                     <h2>Expenditure vs Allotted Budget</h2>
