@@ -62,7 +62,7 @@ function Dashboard() {
     return (
 	<div className="Dashboard">
 		<header className="header">
-		<h1>Budget Tracker</h1>
+            <h1>Budget Tracker</h1>
 		<div className="account-container">
 		    <button className="account-button" onClick={toggleDropdown}>
 			<span className="account-icon">📊</span> {username}

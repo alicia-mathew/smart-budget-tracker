@@ -1,71 +1,74 @@
-html, body {
-    margin: 0;
-    text-align: center;
-    padding: 0;
-    height: 100%;
-    background-color: #1a1a1a; /* Match the background color with expenses */
-    color: #fff;
-    font-family: Arial, sans-serif;
+body {
+    background-color: #1e1e1e;
 }
-
-#root {
-    height: 100%;
-}
-
+  
 .smart-suggestions {
-  display: flex;
-  flex-direction: column;
-  min-height: 100%;
-  padding: 20px;
-  box-sizing: border-box;
-  max-width: 1000px;
-  width: 100%;
-  align-self: center;
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    max-width: 1000px;
+    width: 100%;
+    align-self: center;
 }
 
 .header {
     text-align: center;
     margin-bottom: 20px;
+    background-color: #1e1e1e; 
+    padding: 20px;
+    border-radius: 10px;
 }
 
 h1 {
-    font-size: 30px;
+    font-size: 36px;
     font-weight: bold;
-    margin-top: 0; /* Ensure the h1 is aligned properly */
 }
 
 .table-section {
     border-radius: 10px;
     padding: 20px;
-    margin-top: 20px; /* Add space before the table */
+    margin-top: 20px; 
+    background-color: #1e1e1e;
 }
 
-.table-section table {
-    width: 100%;
-    max-width: 800px; /* Fix the width */
-    margin: auto; /* Center the table */
-    text-align: center; /* Center-align everything in the table */
-    border-collapse: collapse;
+.table-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #444;
 }
 
-.table-section th, .table-section td {
-    padding: 10px;
-    border: none; /* Remove the border property */
-}
-
-.table-section th {
-    background-color: #3c3c3c;
-    font-weight: bold; /* Ensure the headers are bold */
-}
-
-.table-section td {
-    background-color: transparent; /* Remove background color */
-}
-
-.error-message {
-    color: red;
+.table-header {
+    flex: 1;
     text-align: center;
-    margin-top: 10px;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 10px;
+}
+
+.table-row div {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    background-color: transparent;
+    border: 1px solid transparent;
+    color: white;
+    border-radius: 5px;
+}
+
+.table-row:nth-child(even) {
+    background-color: transparent;
+}
+
+.table-row:nth-child(odd) {
+    background-color: transparent;
+}
+
+*:focus {
+    outline: none;
 }
 
 .dashboard-button {
@@ -84,9 +87,18 @@ h1 {
     align-self: center;
 }
 
-.table-header {
-    flex: 1;
-    text-align: center; /* Center align the header text */
-    font-weight: bold;
-    border: none;
+.action-button {
+    padding: 5px 10px;
+    border: 0.2px solid white;
+    border-radius: 14px;
+    cursor: pointer;
+    align-self: center;
+    text-align: center;
+    transition: background-color 0.3s ease;
+    width: fit-content;
+    background-color: #3c3f41;
+}
+
+.action-button:hover {
+    background-color: #333;
 }
