@@ -182,13 +182,13 @@ function LogBudgets() {
                                     value={newBudget.value}
                                     onChange={(e) => handleBudgetChange(-1, e.target.value)}
                                 />
-                                <button className="action-button" onClick={saveNewBudget}>
+                                <button className="log-button" onClick={saveNewBudget}>
                                     Log Budget
                                 </button>
                             </div>
                         ) : (
                             <div className="table-row">
-                                <button className="action-button" onClick={addRow}>+</button>
+                                <button className="add-button" onClick={addRow}>+</button>
                             </div>
                         )}
                     </>

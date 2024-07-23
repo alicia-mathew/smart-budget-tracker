@@ -1,9 +1,5 @@
 body {
-  background-color: #1a1a1a;
-  color: #ffffff;
-  font-family: 'Arial', sans-serif;
-  margin: 0;
-  padding: 0;
+  background-color: #1e1e1e;
 }
 
 .logbudgets {
@@ -67,33 +63,48 @@ body {
   border-radius: 5px;
 }
 
-.table-row input[type="text"], .table-row input[type="date"], .table-row select {
-  flex: 1;
-  text-align: center;
-  margin-right: 5px;
-  margin-left: 5px;
-  border-radius: 5px;
-  border: 1px solid transparent;
-  background: transparent;
-  color: #ffffff;
+.table-row button:hover {
+  background-color: #333;
 }
 
-.table-row button {
-  flex: 1;
+.table-row .action-button {
+  width: 65px; /* Set a fixed width for the buttons */
   padding: 5px 10px;
   border: 0.2px solid white;
-  color: #fff;
   border-radius: 14px;
   cursor: pointer;
-  margin-left: 5px;
-  margin-right: 5px;
   text-align: center;
   transition: background-color 0.3s ease;
   background-color: #3c3f41;
+  margin: 0 5px; /* Add space between buttons */
 }
 
-.table-row button:hover {
-  background-color: #333;
+.table-row .log-button {
+  width: 120px; /* Set a fixed width for the buttons */
+  align-self: center;
+  padding: 5px 10px;
+  border: 0.2px solid white;
+  border-radius: 14px;
+  cursor: pointer;
+  text-align: center;
+  color: #ffffff;
+  transition: background-color 0.3s ease;
+  background-color: #3c3f41;
+  margin: 0 auto; /* Center the button */
+}
+
+.table-row .add-button {
+  width: 1000px; /* Set a fixed width for the buttons */
+  align-self: center;
+  padding: 5px 10px;
+  border: 0.2px solid white;
+  border-radius: 14px;
+  cursor: pointer;
+  text-align: center;
+  color: #fff;
+  transition: background-color 0.3s ease;
+  background-color: #3c3f41;
+  margin: 0 auto; /* Center the button */
 }
 
 .table-row:nth-child(even) {
@@ -130,18 +141,6 @@ body {
   align-self: center;
 }
 
-.action-button {
-  padding: 5px 10px;
-  border: 0.2px solid white;
-  border-radius: 14px;
-  cursor: pointer;
-  align-self: center;
-  text-align: center;
-  transition: background-color 0.3s ease;
-  width: fit-content;
-  background-color: #3c3f41;
-}
-
 .action-button:hover {
-  background-color: #333;
+  background-color: #333; 
 }

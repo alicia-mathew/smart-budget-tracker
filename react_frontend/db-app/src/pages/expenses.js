@@ -315,7 +315,7 @@ function Expenses() {
                                         onChange={(e) => handleInputChange(index, e)}
                                     />
                                     {expense.isNew ? (
-                                        <button className="action-button" onClick={() => saveNewExpense(index)}>Add Expense</button>
+                                        <button className="add-button" onClick={() => saveNewExpense(index)}>Add Expense</button>
                                     ) : (
                                         <button className="action-button" onClick={() => saveEditedExpense(index)}>Save</button>
                                     )}
@@ -338,13 +338,13 @@ function Expenses() {
                     ))}
                     {canEditPermissions.add_exp ? (
                         <div className="table-row">
-                            <button className="action-button" onClick={addRow}>+</button>
+                            <button className="addnew-button" onClick={addRow}>+</button>
                         </div>
                     ) : null}
                     {errorMessage && <div className="error-message">{errorMessage}</div>}
                 </div>
             </form>
-            <br />
+            <br></br>
             <button className="dashboard-button" onClick={goDashboard}>Return to Dashboard</button>
         </div>
     );
