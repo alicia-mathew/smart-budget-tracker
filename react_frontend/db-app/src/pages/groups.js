@@ -53,32 +53,28 @@ function Groups() {
         <div className="groups-table">
             <header className="header">
                 <h1>Group Management</h1>
-        	</header>
-			<h3 className="intro" style={{ textAlign: 'center' }}>View all info regarding your group enrollment.</h3>
-            <table className='expense-list'>
-                <thead>
-                    <tr>
-                        <th>Group ID</th>
-                        <th>Group Name</th>
-                        <th>Group Permissions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {groups.map(group => (
-                        <tr key={group.group_id}>
-                            <td>{group.group_id}</td>
-                            <td>{group.name}</td>
-                            <td>
-                                <a href={`/groups/manage_permissions/${group.group_id}`}>
-                                    <button type='button' className="action-button">
-                                        Manage Permissions
-                                    </button>
-                                </a>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            </header>
+            <h3 className="intro" style={{ textAlign: 'center' }}>View all info regarding your group enrollment.</h3>
+            <div className="groups-list">
+                <div className="table-row">
+                    <div className="table-header">Group ID</div>
+                    <div className="table-header">Group Name</div>
+                    <div className="table-header">Group Permissions</div>
+                </div>
+                {groups.map(group => (
+                    <div className="table-row" key={group.group_id}>
+                        <div>{group.group_id}</div>
+                        <div>{group.name}</div>
+                        <div>
+                            <a href={`/groups/manage_permissions/${group.group_id}`}>
+                                <button type='button' className="manage-button">
+                                    Manage Permissions
+                                </button>
+                            </a>
+                        </div>
+                    </div>
+                ))}
+            </div>
             <div>
                 <h2>Create a New Group</h2>
                 <form onSubmit={createGroup}>

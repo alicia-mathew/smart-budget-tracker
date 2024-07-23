@@ -13,40 +13,23 @@ body {
   align-self: center;
 }
 
-.expense-list {
+.header {
+  background-color: #1e1e1e;
   border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   padding: 20px;
-  margin-top: 20px;
-}
-
-.expense-list table {
-  width: 100%;
-  max-width: 800px; 
-  margin: auto; 
-  border-collapse: collapse;
-  text-align: center; 
-  background-color: #1e1e1e;
-}
-
-.expense-list th, .expense-list td {
-  padding: 10px;
-  border: none; 
-}
-
-.expense-list th {
-  background-color: #1e1e1e;
-}
-
-.expense-list td {
-  background-color: transparent; 
+  flex: 1;
+  margin: 10px;
+  text-align: center;
 }
 
 .expense-header {
   text-align: center;
   margin-bottom: 20px;
   background-color: #1e1e1e;
+  padding: 20px;
+  border-radius: 10px;
 }
-
 
 h1 {
   font-size: 36px;
@@ -58,7 +41,6 @@ h3 {
   font-weight: normal;
   margin-bottom: 20px;
 }
-
 
 .common-style {
   border: 0.2px solid white;
@@ -79,19 +61,46 @@ h3 {
   background-color: #333;
 }
 
-.action-button {
+.table-row .action-button {
   padding: 5px 10px;
   border: 0.2px solid white;
   border-radius: 14px;
   cursor: pointer;
-  align-self: center;
   text-align: center;
   transition: background-color 0.3s ease;
-  width: fit-content;
+  width: 65px; /* Set a fixed width for the buttons */
   background-color: #3c3f41;
 }
 
-.action-button:hover {
+.table-row .add-button {
+  width: 90px; /* Set a fixed width for the buttons */
+  align-self: center;
+  padding: 5px 10px;
+  border: 0.2px solid white;
+  border-radius: 14px;
+  cursor: pointer;
+  text-align: center;
+  color: #ffffff;
+  transition: background-color 0.3s ease;
+  background-color: #3c3f41;
+  margin: 0 auto; /* Center the button */
+}
+
+.table-row .addnew-button {
+  width: 1000px; /* Set a fixed width for the buttons */
+  align-self: center;
+  padding: 5px 10px;
+  border: 0.2px solid white;
+  border-radius: 14px;
+  cursor: pointer;
+  text-align: center;
+  color: #fff;
+  transition: background-color 0.3s ease;
+  background-color: #3c3f41;
+  margin: 0 auto; /* Center the button */
+}
+
+.action-button:hover, .log-button:hover {
   background-color: #333;
 }
 
@@ -106,14 +115,25 @@ h3 {
   justify-content: space-between;
   align-items: center;
   padding: 10px 0;
-  border-bottom: 1px solid #444; 
+  border-bottom: 1px solid #444;
 }
 
 .table-header {
   flex: 1;
   text-align: center;
   font-weight: bold;
-  border: none;
+  font-size: 16px;
+  padding: 10px;
+}
+
+.table-row div {
+  flex: 1;
+  text-align: center;
+  padding: 10px;
+  background-color: transparent;
+  border: 1px solid transparent;
+  color: white;
+  border-radius: 5px;
 }
 
 .table-row input[type="text"], .table-row input[type="date"], .table-row select {
@@ -127,39 +147,8 @@ h3 {
   color: #ffffff;
 }
 
-.table-row div {
-  flex: 1;
-  margin: 0 5px;
-  border: 1px solid transparent;
-  color: white;
-  border-radius: 5px;
-  text-align: center;
-}
-
-.table-row button {
-  flex: 1;
-  padding: 5px 10px;
-  border: 0.2px solid white;
-  color: #fff;
-  border-radius: 14px;
-  cursor: pointer;
-  margin-left: 5px;
-  margin-right: 5px;
-  text-align: center;
-  transition: background-color 0.3s ease;
-  background-color: #3c3f41;
-}
-
 .table-row button:hover {
   background-color: #333;
-}
-
-.table-row:nth-child(even) {
-  background-color: transparent;
-}
-
-.table-row:nth-child(odd) {
-  background-color: transparent;
 }
 
 *:focus {
@@ -190,8 +179,32 @@ h3 {
   align-self: center;
 }
 
-.button-group {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
+.expense-list {
+  background-color: #1e1e1e;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  flex: 1;
+  margin: 10px;
+}
+
+.expense-list table {
+  width: 100%;
+  margin: auto;
+  border-collapse: collapse;
+  text-align: center;
+  background-color: #1e1e1e;
+}
+
+.expense-list th, .expense-list td {
+  padding: 10px;
+  border: none;
+}
+
+.expense-list th {
+  background-color: #1e1e1e;
+}
+
+.expense-list td {
+  background-color: transparent;
 }

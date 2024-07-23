@@ -75,47 +75,44 @@ function Groups() {
         return (
             <div className="permissions-table">
                 <header className="header">
-                <h1>Group Permissions Management</h1>
-        	</header>
-			<h3 className="intro" style={{ textAlign: 'center' }}>Manage your group permissions.</h3>
-                <table className='expense-list' id='permission-list'>
-                    <thead>
-                        <tr>
-                            <th>Group Member</th>
-                            <th>Can Manage Group Member Permissions</th>
-                            <th>Can Modify Group Spending Goals</th>
-                            <th>Can Add Group Expense</th>
-                            <th>Can Modify Group Expense</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {permissions.map((permission, index) => (
-                            <tr key={index}>
-                                <td>{permission.name}</td>
-                                <td><input type='checkbox' checked={permission.manage_mem} onChange={handleEditChange(index, 'manage_mem')}></input></td>
-                                <td><input type='checkbox' checked={permission.create_sg} onChange={handleEditChange(index, 'create_sg')}></input></td>
-                                <td><input type='checkbox' checked={permission.add_exp} onChange={handleEditChange(index, 'add_exp')}></input></td>
-                                <td><input type='checkbox' checked={permission.modify_exp} onChange={handleEditChange(index, 'modify_exp')}></input></td>
-                                <td hidden={true}>{permission.role_id}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                    <h1>Group Permissions Management</h1>
+                </header>
+                <h3 className="intro" style={{ textAlign: 'center' }}>Manage your group permissions.</h3>
+                <div className="expense-list" id="permission-list">
+                    <div className="table-row">
+                        <div className="table-header">Group Member</div>
+                        <div className="table-header">Can Manage Group Member Permissions</div>
+                        <div className="table-header">Can Modify Group Spending Goals</div>
+                        <div className="table-header">Can Add Group Expense</div>
+                        <div className="table-header">Can Modify Group Expense</div>
+                    </div>
+                    {permissions.map((permission, index) => (
+                        <div className="table-row" key={index}>
+                            <div>{permission.name}</div>
+                            <div><input type='checkbox' checked={permission.manage_mem} onChange={handleEditChange(index, 'manage_mem')}></input></div>
+                            <div><input type='checkbox' checked={permission.create_sg} onChange={handleEditChange(index, 'create_sg')}></input></div>
+                            <div><input type='checkbox' checked={permission.add_exp} onChange={handleEditChange(index, 'add_exp')}></input></div>
+                            <div><input type='checkbox' checked={permission.modify_exp} onChange={handleEditChange(index, 'modify_exp')}></input></div>
+                            <div hidden={true}>{permission.role_id}</div>
+                        </div>
+                    ))}
+                </div>
                 <br></br>
                 <button onClick={savePermissions} className="action-button">Save Permissions</button>
                 <br></br>
-                <br/>
                 <button onClick={goToGroups} className="action-button">Back to Group Management</button>
+                <br></br>
                 <button onClick={goDashboard} className="action-button">Return to Dashboard</button>
             </div>
         );
     } else {
         return (
-            <div>
+            <div className="NoPermissionsPage">
                 <h1>Manage Group Permissions</h1>
                 <p>You do not have permission to manage permissions for this group!</p>
                 <div className="button-group">
                     <button onClick={goToGroups} className="action-button">Back to Group Management</button>
+                    <br></br> <br></br>
                     <button onClick={goDashboard} className="action-button">Return to Dashboard</button>
                 </div>
             </div>
