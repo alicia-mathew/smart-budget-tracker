@@ -6,14 +6,8 @@ import { useParams } from 'react-router-dom';
 
 function LogBudgets() {
     const navigate = useNavigate();
-    const [rows, setRows] = useState([{
-        budget_id: '',
-        category: '',
-        value: '',
-        isNew: true,
-        isEditing: false
-    }]);
-    const [budget, setBudget] = useState([]);
+    const [rows, setRows] = useState([]);
+    const [newBudget, setNewBudget] = useState(null);
     const [errorMessage, setErrorMessage] = useState('');
     const [canEditPermissions, setCanEditPermissions] = useState([]);
     const ind_id = JSON.parse(localStorage.getItem('user')).ind_id;
@@ -27,22 +21,14 @@ function LogBudgets() {
 
     const fetchBudget = async () => {
         const response = await axios.get(`http://127.0.0.1:5000/api/budget?user_id=${user_id}`);
-        setBudget(response.data);
         const formattedRows = response.data.map(budget => ({
             budget_id: budget.spending_id,
             category: budget.category,
-            value: budget.amount.toString(), // Convert amount to string if necessary
+            value: budget.amount.toString(),
             isNew: false,
             isEditing: false
         }));
-        setRows([...formattedRows,
-        {
-            budget_id: '',
-            category: '',
-            value: '',
-            isNew: true,
-            isEditing: false
-        }]);
+        setRows(formattedRows);
     };
 
     const fetchCanEdit = async () => {
@@ -52,52 +38,49 @@ function LogBudgets() {
         } catch (error) {
             console.error('There was an error fetching your editing permissions!', error);
         }
-    }
-
-    const addRow = () => {
-        const lastRow = rows[rows.length - 1];
-        if (lastRow['category'] !== '' && lastRow['value'] !== '') {
-            setRows([...rows,
-            {
-                budget_id: '',
-                category: '',
-                value: '',
-                isNew: true,
-                isEditing: false
-            }]);
-            setErrorMessage('')
-        } else {
-            setErrorMessage('Please Fill in the Fields before adding a new Budget!')
-        }
     };
 
     const handleCategoryChange = (index, value) => {
-        const newRow = [...rows];
-        newRow[index].category = value;
-        setRows(newRow);
+        if (index === -1) {
+            setNewBudget({ ...newBudget, category: value });
+        } else {
+            const newRow = [...rows];
+            newRow[index].category = value;
+            setRows(newRow);
+        }
     };
 
     const handleBudgetChange = (index, value) => {
-        const newRow = [...rows];
-        newRow[index].value = value;
-        setRows(newRow);
+        if (index === -1) {
+            setNewBudget({ ...newBudget, value: value });
+        } else {
+            const newRow = [...rows];
+            newRow[index].value = value;
+            setRows(newRow);
+        }
     };
 
-    const addBudget = async () => {
-        const lastRow = rows[rows.length - 1];
-        lastRow['user_id'] = user_id;
-        if (lastRow.isNew && lastRow.category !== '' && lastRow.value !== '') {
+    const addRow = () => {
+        setNewBudget({ budget_id: '', category: '', value: '', isNew: true, isEditing: true });
+        setErrorMessage('');
+    };
+
+    const saveNewBudget = async () => {
+        const newRow = { ...newBudget, user_id: user_id };
+        if (newRow.category !== '' && newRow.value !== '') {
             try {
-                await axios.post(`http://127.0.0.1:5000/api/category`, lastRow);
-                lastRow.isNew = false;
-                setBudget([...budget, lastRow]);
-                addRow();
+                const response = await axios.post(`http://127.0.0.1:5000/api/category`, newRow);
+                newRow.budget_id = response.data.budget_id; // Assuming response contains the new budget_id
+                newRow.isNew = false;
+                newRow.isEditing = false;
+                setRows([...rows, newRow]);
+                setNewBudget(null);
+                setErrorMessage('');
             } catch (error) {
                 console.error("Error while posting to budget: ", error);
             }
-            setErrorMessage('')
         } else {
-            setErrorMessage('Cannot log in an empty budget.')
+            setErrorMessage('Cannot log in an empty budget.');
         }
     };
 
@@ -118,7 +101,6 @@ function LogBudgets() {
             await axios.put(`http://127.0.0.1:5000/api/category`, updatedRow);
             const newRow = [...rows];
             newRow[index].isEditing = false;
-            newRow[index].isNew = false;
             setRows(newRow);
         } catch (error) {
             console.error("Error while updating budget: ", error);
@@ -137,10 +119,10 @@ function LogBudgets() {
 
     return (
         <div className="logbudgets">
-			<header className="header">
+            <header className="header">
                 <h1>Budget Goal Management</h1>
-        	</header>
-			<h3 className="intro" style={{ textAlign: 'center' }}>Welcome to your budget goal management sheet!</h3>
+            </header>
+            <h3 className="intro" style={{ textAlign: 'center' }}>Welcome to your budget goal management sheet!</h3>
             <h3 className="intro" style={{ textAlign: 'center' }}>You can add, delete, and edit your spending budgets.</h3>
             <div className="budget-table">
                 <div className="table-row">
@@ -170,46 +152,46 @@ function LogBudgets() {
                             </>
                         ) : (
                             <>
-                                {row.isNew ? (
-                                    <>
-                                        <input
-                                            type="text"
-                                            value={row.category}
-                                            onChange={(e) => handleCategoryChange(index, e.target.value)}
-                                        />
-                                        <input
-                                            type="text"
-                                            value={row.value}
-                                            onChange={(e) => handleBudgetChange(index, e.target.value)}
-                                        />
-                                        <button className="action-button" onClick={() => addBudget()}>
-                                            Log Budget
+                                <div>{row.category}</div>
+                                <div>{row.value}</div>
+                                {canEditPermissions.create_sg ? (
+                                    <div className="buttons">
+                                        <button className="action-button" onClick={() => editBudget(index)}>
+                                            Edit
                                         </button>
-                                    </>
-                                ) : (
-                                    <>
-                                        <div>{row.category}</div>
-                                        <div>{row.value}</div>
-                                        {canEditPermissions.create_sg ? (
-                                            <div className="buttons">
-                                                <button className="action-button" onClick={() => editBudget(index)}>
-                                                    Edit
-                                                </button>
-                                                <button className="action-button" onClick={() => deleteBudget(index)}>
-                                                    Delete
-                                                </button>
-                                            </div>
-                                        ) : null}
-                                    </>
-                                )}
+                                        <button className="action-button" onClick={() => deleteBudget(index)}>
+                                            Delete
+                                        </button>
+                                    </div>
+                                ) : null}
                             </>
                         )}
                     </div>
                 ))}
                 {canEditPermissions.create_sg ? (
-                    <div className="table-row">
-                        <button className="action-button" onClick={() => addRow()}>+</button>
-                    </div>
+                    <>
+                        {newBudget ? (
+                            <div className="table-row">
+                                <input
+                                    type="text"
+                                    value={newBudget.category}
+                                    onChange={(e) => handleCategoryChange(-1, e.target.value)}
+                                />
+                                <input
+                                    type="text"
+                                    value={newBudget.value}
+                                    onChange={(e) => handleBudgetChange(-1, e.target.value)}
+                                />
+                                <button className="action-button" onClick={saveNewBudget}>
+                                    Log Budget
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="table-row">
+                                <button className="action-button" onClick={addRow}>+</button>
+                            </div>
+                        )}
+                    </>
                 ) : null}
                 {errorMessage && <div className="error-message">{errorMessage}</div>}
             </div>

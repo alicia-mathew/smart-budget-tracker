@@ -78,7 +78,7 @@ body {
   color: #ffffff;
 }
 
-/* .table-row button {
+.table-row button {
   flex: 1;
   padding: 5px 10px;
   border: 0.2px solid white;
@@ -90,7 +90,7 @@ body {
   text-align: center;
   transition: background-color 0.3s ease;
   background-color: #3c3f41;
-} */
+}
 
 .table-row button:hover {
   background-color: #333;

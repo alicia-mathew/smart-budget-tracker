@@ -1,48 +1,40 @@
-/* Home.css */
 .home {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  text-align: center;
-}
-
-.home h2 {
-  margin-bottom: 20px;
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.form input {
-  margin-bottom: 10px;
-  padding: 10px;
-  width: 200px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-.buttons {
-  display: flex;
-  justify-content: space-between;
-  width: 220px;
-}
-
-.buttons button {
-  background-color: #1e1e1e;
-  color: #fff;
   border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
+  border-radius: 10px;
+  padding: 20px;
+  flex: 1;
+  margin: 10px;
+  text-align: center;
+  width: fit-content;
+  align-self: center;
+}
+
+.input-style {
+  padding: 5px 10px;
+  border: 0.2px solid white;
+  border-radius: 14px;
   cursor: pointer;
+  align-self: center;
+  text-align: center; 
   transition: background-color 0.3s ease;
+  width: 300px;
+  background-color: #3c3f41;
+  color: #ffff;
 }
 
-.buttons button:hover {
-  background-color: #3c3c3c;
+.login-button {
+  padding: 5px 10px;
+  border: 0.2px solid white;
+  border-radius: 14px;
+  cursor: pointer;
+  align-self: center;
+  text-align: center;
+  transition: background-color 0.3s ease;
+  width: fit-content;
+  background-color: #3c3f41;
+  color: #ffff;
 }
 
+.login-button:hover {
+  background-color: #333;
+}

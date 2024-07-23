@@ -1,5 +1,5 @@
 body {
-  background-color: #1a1a1a; /* Change the background color of the entire page if needed */
+  background-color: #1e1e1e;
 }
 
 .expenses {
@@ -16,34 +16,35 @@ body {
 .expense-list {
   border-radius: 10px;
   padding: 20px;
-  margin-top: 20px; /* Add space before the table */
+  margin-top: 20px;
 }
 
 .expense-list table {
   width: 100%;
-  max-width: 800px; /* Fix the width */
-  margin: auto; /* Center the table */
+  max-width: 800px; 
+  margin: auto; 
   border-collapse: collapse;
-  text-align: center; /* Center-align everything in the table */
+  text-align: center; 
+  background-color: #1e1e1e;
 }
 
 .expense-list th, .expense-list td {
   padding: 10px;
-  /* Remove the border property */
   border: none; 
 }
 
 .expense-list th {
-  background-color: #3c3c3c;
+  background-color: #1e1e1e;
 }
 
 .expense-list td {
-  background-color: transparent; /* Remove background color */
+  background-color: transparent; 
 }
 
 .expense-header {
-  text-align: center; /* Center the heading */
+  text-align: center;
   margin-bottom: 20px;
+  background-color: #1e1e1e;
 }
 
 
@@ -69,8 +70,8 @@ h3 {
   padding: 5px 10px;
   box-sizing: border-box;
   display: inline-block;
-  width: auto; /* Adjust width as needed */
-  margin: 5px; /* Adds space between filter inputs */
+  width: auto;
+  margin: 5px;
   text-align: center;
 }
 
@@ -105,14 +106,13 @@ h3 {
   justify-content: space-between;
   align-items: center;
   padding: 10px 0;
-  border-bottom: 1px solid #444; /* Optional: adjust or remove this line if you don't want any bottom border */
+  border-bottom: 1px solid #444; 
 }
 
 .table-header {
   flex: 1;
-  text-align: center; /* Center align the header text */
+  text-align: center;
   font-weight: bold;
-  /* Remove the border properties */
   border: none;
 }
 
