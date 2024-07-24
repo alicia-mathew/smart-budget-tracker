@@ -123,7 +123,7 @@ function LogBudgets() {
                 <h1>Budget Goal Management</h1>
             </header>
             <h3 className="intro" style={{ textAlign: 'center' }}>Welcome to your budget goal management sheet!</h3>
-            <h3 className="intro" style={{ textAlign: 'center' }}>You can add, delete, and edit your spending budgets.</h3>
+            <h3 className="intro" style={{ textAlign: 'center' }}>You can add, delete, and edit your spending budgets and goals.</h3>
             <div className="budget-table">
                 <div className="table-row">
                     <div className="table-header">Categories</div>
@@ -140,13 +140,15 @@ function LogBudgets() {
                                     type="text"
                                     value={row.category}
                                     onChange={(e) => handleCategoryChange(index, e.target.value)}
+                                    className="table-input"
                                 />
                                 <input
                                     type="text"
                                     value={row.value}
                                     onChange={(e) => handleBudgetChange(index, e.target.value)}
+                                    className="table-input"
                                 />
-                                <button className="action-button" onClick={() => saveEditedBudget(index)}>
+                                <button className="actionsave-button" onClick={() => saveEditedBudget(index)}>
                                     Save Edits
                                 </button>
                             </>
@@ -176,11 +178,13 @@ function LogBudgets() {
                                     type="text"
                                     value={newBudget.category}
                                     onChange={(e) => handleCategoryChange(-1, e.target.value)}
+                                    className="table-input"
                                 />
                                 <input
                                     type="text"
                                     value={newBudget.value}
                                     onChange={(e) => handleBudgetChange(-1, e.target.value)}
+                                    className="table-input"
                                 />
                                 <button className="log-button" onClick={saveNewBudget}>
                                     Log Budget

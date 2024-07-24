@@ -26,7 +26,7 @@ function Home() {
 
     return (
         <div className="home">
-            <h1>Welcome to Budget Tracker</h1>
+            <h1>Welcome to Smart Budget Tracker</h1>
             <h3>Enter your email and password to log in!</h3>
             <br></br>
                 <input

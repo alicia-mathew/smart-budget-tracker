@@ -8,6 +8,7 @@ function Expenses() {
     const navigate = useNavigate();
     const [categories, setCategories] = useState([]);
     const [expenses, setExpenses] = useState([]);
+    const [filteredExpenses, setFilteredExpenses] = useState([]);
     const [errorMessage, setErrorMessage] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
     const [filterType, setFilterType] = useState('');
@@ -52,6 +53,7 @@ function Expenses() {
                 isEditing: false
             }));
             setExpenses(expensesData);
+            setFilteredExpenses(expensesData);
 
             const uniqueMonths = [...new Set(expensesData.map(expense => new Date(expense.date).getMonth() + 1))];
             const uniqueYears = [...new Set(expensesData.map(expense => new Date(expense.date).getFullYear()))];
@@ -73,15 +75,23 @@ function Expenses() {
 
     const handleInputChange = (index, event) => {
         const { name, value } = event.target;
-        const newExpenses = [...expenses];
+        const newExpenses = [...filteredExpenses];
         newExpenses[index][name] = value;
+        setFilteredExpenses(newExpenses);
+    };
+
+    const updateMainExpenses = (updatedExpenses) => {
+        const newExpenses = expenses.map(expense => {
+            const updatedExpense = updatedExpenses.find(e => e.expense_id === expense.expense_id);
+            return updatedExpense ? updatedExpense : expense;
+        });
         setExpenses(newExpenses);
     };
 
     const addRow = () => {
         const lastExpense = expenses[expenses.length - 1];
         if (lastExpense && lastExpense.description !== '' && lastExpense.amount !== '' && lastExpense.category !== '' && lastExpense.date !== '') {
-            setExpenses([...expenses, {
+            const newExpense = {
                 expense_id: '',
                 description: '',
                 amount: '',
@@ -89,7 +99,9 @@ function Expenses() {
                 date: '',
                 isNew: true,
                 isEditing: true
-            }]);
+            };
+            setFilteredExpenses([...filteredExpenses, newExpense]);
+            setExpenses([...expenses, newExpense]);
             setErrorMessage('');
         } else {
             setErrorMessage('There was an error adding the expense! Please fill in all necessary fields.');
@@ -97,17 +109,17 @@ function Expenses() {
     };
 
     const saveNewExpense = async (index) => {
-        const newExpense = expenses[index];
+        const newExpense = filteredExpenses[index];
         newExpense.user_id = user_id;
         if (newExpense.description !== '' && newExpense.amount !== '' && newExpense.category !== '' && newExpense.date !== '') {
             try {
                 const response = await axios.post('http://127.0.0.1:5000/api/expenses', newExpense);
                 console.log("Response from server:", response.data);
-                const newExpenses = [...expenses];
-                newExpenses[index] = { ...response.data, isNew: false, isEditing: false };
-                setExpenses(newExpenses);
+                const newFilteredExpenses = [...filteredExpenses];
+                newFilteredExpenses[index] = { ...response.data, isNew: false, isEditing: false };
+                setFilteredExpenses(newFilteredExpenses);
+                updateMainExpenses(newFilteredExpenses);
                 setErrorMessage('');
-                fetchExpenses();
             } catch (error) {
                 console.error('There was an error adding the expense!', error);
                 setErrorMessage('There was an error adding the expense.');
@@ -118,29 +130,32 @@ function Expenses() {
     };
 
     const editExpense = (index) => {
-        const newExpenses = [...expenses];
-        newExpenses[index].isEditing = true;
-        setExpenses(newExpenses);
+        const newFilteredExpenses = [...filteredExpenses];
+        newFilteredExpenses[index].isEditing = true;
+        setFilteredExpenses(newFilteredExpenses);
     };
 
     const saveEditedExpense = async (index) => {
-        const updatedExpense = expenses[index];
+        const updatedExpense = filteredExpenses[index];
         try {
             await axios.put(`http://127.0.0.1:5000/api/expenses/${updatedExpense.expense_id}`, updatedExpense);
-            const newExpenses = [...expenses];
-            newExpenses[index].isEditing = false;
-            setExpenses(newExpenses);
+            const newFilteredExpenses = [...filteredExpenses];
+            newFilteredExpenses[index].isEditing = false;
+            setFilteredExpenses(newFilteredExpenses);
+            updateMainExpenses(newFilteredExpenses);
         } catch (error) {
             console.error('There was an error updating the expense!', error);
         }
     };
 
     const deleteExpense = async (index) => {
-        const expenseToDelete = expenses[index];
+        const expenseToDelete = filteredExpenses[index];
         try {
             if (!expenseToDelete.isNew) {
                 await axios.delete(`http://127.0.0.1:5000/api/expenses/${expenseToDelete.expense_id}`);
             }
+            const newFilteredExpenses = filteredExpenses.filter((_, i) => i !== index);
+            setFilteredExpenses(newFilteredExpenses);
             setExpenses(expenses.filter((_, i) => i !== index));
         } catch (error) {
             console.error('There was an error deleting the expense!', error);
@@ -148,7 +163,7 @@ function Expenses() {
     };
 
     const filterExpenses = () => {
-        return expenses.filter(expense => {
+        let filtered = expenses.filter(expense => {
             let matchesSearch = true;
             let matchesFilter = true;
 
@@ -175,7 +190,12 @@ function Expenses() {
 
             return matchesSearch && matchesFilter;
         });
+        setFilteredExpenses(filtered);
     };
+
+    useEffect(() => {
+        filterExpenses();
+    }, [searchTerm, filterType, filterValue, lowerRange, upperRange, filterMonth, filterYear]);
 
     const handleFilterChange = (event) => {
         setFilterType(event.target.value);
@@ -202,7 +222,6 @@ function Expenses() {
                         placeholder="Search expenses..."
                         onChange={e => setSearchTerm(e.target.value.toLowerCase())}
                     />
-
                     <select className="common-style filter-dropdown" onChange={handleFilterChange} onClick={handleSelectClicked}>
                         {!isClicked ? (
                             <option value="">Filter By...</option>
@@ -270,7 +289,7 @@ function Expenses() {
                         </select>
                     )}
                 </div>
-
+                <br></br>
                 <div className="expense-list">
                     <div className="table-row">
                         <div className="table-header">Description</div>
@@ -281,8 +300,7 @@ function Expenses() {
                             <div className="table-header">Actions</div>
                         ) : null}
                     </div>
-
-                    {filterExpenses().map((expense, index) => (
+                    {filteredExpenses.map((expense, index) => (
                         <div className="table-row" key={index}>
                             {expense.isEditing ? (
                                 <>
@@ -291,17 +309,20 @@ function Expenses() {
                                         name="description"
                                         value={expense.description}
                                         onChange={(e) => handleInputChange(index, e)}
+                                        className="input-description"
                                     />
                                     <input
                                         type="text"
                                         name="amount"
                                         value={expense.amount}
                                         onChange={(e) => handleInputChange(index, e)}
+                                        className="input-amount"
                                     />
                                     <select
                                         name="category"
                                         value={expense.category}
                                         onChange={(e) => handleInputChange(index, e)}
+                                        className="input-category"
                                     >
                                         <option value="">Select category</option>
                                         {categories.map((category, idx) => (
@@ -313,19 +334,20 @@ function Expenses() {
                                         name="date"
                                         value={expense.date}
                                         onChange={(e) => handleInputChange(index, e)}
+                                        className="input-date"
                                     />
                                     {expense.isNew ? (
-                                        <button className="add-button" onClick={() => saveNewExpense(index)}>Add Expense</button>
+                                        <button className="addExp-button" onClick={() => saveNewExpense(index)}>Add Expense</button>
                                     ) : (
-                                        <button className="action-button" onClick={() => saveEditedExpense(index)}>Save</button>
+                                        <button className="saveEdits-button" onClick={() => saveEditedExpense(index)}>Save Edits</button>
                                     )}
                                 </>
                             ) : (
                                 <>
-                                    <div>{expense.description}</div>
-                                    <div>{expense.amount}</div>
-                                    <div>{expense.category}</div>
-                                    <div>{expense.date}</div>
+                                    <div className="input-description1">{expense.description}</div>
+                                    <div className="input-amount1">{expense.amount}</div>
+                                    <div className="input-category1">{expense.category}</div>
+                                    <div className="input-date1">{expense.date}</div>
                                     {canEditPermissions.modify_exp ? (
                                         <div className="buttons">
                                             <button className="action-button" onClick={() => editExpense(index)}>Edit</button>

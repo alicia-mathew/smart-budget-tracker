@@ -32,7 +32,7 @@ function SmartSuggestions() {
             <header className="header">
                 <h1>Smart Suggestions</h1>
             </header>
-            <h3 className="intro" style={{ textAlign: 'center' }}>Here are some smart suggestions for you.</h3>
+            <h3 className="intro" style={{ textAlign: 'center' }}>Here are some smart suggestions for you for more insight on how to better allocate your monthly budgets!</h3>
             <div className="table-section">
                 <div className="table-row">
                     <div className="table-header">#</div>

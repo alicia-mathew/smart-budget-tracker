@@ -206,7 +206,7 @@ function Trends() {
                     <h2>Expenditure vs Allotted Budget</h2>
                     <div className="month-selector">
                         <label>Select Month: </label>
-                        <select
+                        <select className="common-style filter-dropdown"
                             value={lineSelectedMonth}
                             onChange={e => setLineSelectedMonth(e.target.value)}
                         >
@@ -233,7 +233,7 @@ function Trends() {
                     <h2>Monthly Expenditure</h2>
                     <div className="month-selector">
                         <label>Select Month: </label>
-                        <select
+                        <select className="common-style filter-dropdown"
                             value={radarSelectedMonth}
                             onChange={e => setRadarSelectedMonth(e.target.value)}
                         >
