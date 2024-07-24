@@ -39,6 +39,7 @@ function Groups() {
         const rows = permList.children[1].children;
         let permissionData = [];
         for (let i = 0; i < rows.length; i++) {
+            console.log(rows[i].children[5]);
             permissionData.push(
                 {
                     "role_id": rows[i].children[5].textContent,

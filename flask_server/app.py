@@ -382,7 +382,11 @@ def leaderboard():
         (user_id,)
     ).fetchall()
 
-    return jsonify([dict(category) for category in leaderboard])
+    result = [dict(category) for category in leaderboard]
+    for user in result:
+        net_savings = user["net_savings"]
+        user["net_savings"] = f"{net_savings:.2f}"
+    return jsonify(result)
 
 
 # API endpoint for fetching user groups
