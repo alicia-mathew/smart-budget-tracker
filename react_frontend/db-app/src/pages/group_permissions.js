@@ -36,10 +36,9 @@ function Groups() {
 
     const savePermissions = async () => {
         const permList = document.getElementById("permission-list");
-        const rows = permList.children[1].children;
+        const rows = permList.children;
         let permissionData = [];
-        for (let i = 0; i < rows.length; i++) {
-            console.log(rows[i].children[5]);
+        for (let i = 1; i < rows.length; i++) {
             permissionData.push(
                 {
                     "role_id": rows[i].children[5].textContent,
