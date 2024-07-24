@@ -2,6 +2,18 @@ body {
   background-color: #1e1e1e;
 }
 
+.intro-container {
+  max-width: 1000px;
+  width: 100%;
+  text-align: center;
+}
+
+.intro {
+  font-size: 18px;
+  line-height: 1.5;
+  color: #fff;
+}
+
 .groups-table {
   display: flex;
   flex-direction: column;
@@ -102,10 +114,12 @@ body {
   align-self: center;
   text-align: center;
   transition: background-color 0.3s ease;
-  width: 150px;
+  width: 190px;
   background-color: #3c3f41;
+  font-size: 16px;
 }
 
 .action-button:hover {
   background-color: #333;
 }
+

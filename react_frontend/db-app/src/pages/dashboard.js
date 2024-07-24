@@ -62,7 +62,7 @@ function Dashboard() {
     return (
 	<div className="Dashboard">
 		<header className="header">
-            <h1>Budget Tracker</h1>
+            <h1>Smart Budget Tracker</h1>
 		<div className="account-container">
 		    <button className="account-button" onClick={toggleDropdown}>
 			<span className="account-icon">📊</span> {username}
@@ -81,6 +81,14 @@ function Dashboard() {
                 <h2>Welcome to {selectedDashboard}'s Dashboard!</h2>
             )}
         </div>}
+		<div className="intro-paragraph">
+                <p> 
+					This is your main dashboard! Here, you can manage your personal budget goals, track your expenses, visualize your spending patterns, and benefit from smart, personalized suggestions on how to save more. You can also create your own group or join an existing one and manage all your expenses in one place!
+				</p>
+				<p>
+					To get started, choose your dashboard and then select a section below to explore the features designed to help you manage your finances efficiently.
+				</p>
+        </div>
         <div className="groups-container">
             <label>Select Dashboard:</label>
             <select className="select-dashboard" onChange={changeSelectedDashboard}>
@@ -94,29 +102,29 @@ function Dashboard() {
 	    <div className="content">
 			<div className="section" onClick={() => routePage(`/logbudgets/${selectedUser}`)}>
 				<h2>Budget Goal Management</h2>
-				<p1>Log and split your expenditure budgets into categories.</p1>
+				<p>Start by splitting your expenditure budgets into categories and logging your budget goals.</p>
 			</div>
 			<div className="section" onClick={() => routePage(`/expenses/${selectedUser}`)}>
 				<h2>Expense Management</h2>
-				<p1>Log and manage your expenses.</p1>
+				<p>Log and manage all your expenses at once.</p>
 			</div>
 			<div className="section" onClick={() => routePage(`/trends/${selectedUser}`)}>
 				<h2>Visualize Spending Patterns</h2>
-				<p1>Take a look at your spending trends.</p1>
+				<p>Take a look at your spending trends.</p>
 			</div>
 			<div className="section" onClick={() => routePage(`/smart_suggestions/${selectedUser}`)}>
 				<h2>Smart Suggestions</h2>
-				<p1>Get some insights and suggestions on how to spend and save more!</p1>
+				<p>Get some insights and suggestions on how to spend more efficiently and save more!</p>
 			</div>
 			<div className="section" onClick={() => routePage('/savings_leaderboard/')}>
 				<h2>Savings Leaderboard</h2>
-				<p1>Find out who the top saver is!</p1>
+				<p>Find out who the top saver is amongst your friends!</p>
 			</div>
 			<div className="section" onClick={() => routePage('/groups')}>
 				<h2>Group Management</h2>
-				<p1>Manage your group-wide spending.</p1>
+				<p>Manage and view your group-wide spending activity, join new group or create your own!</p>
 			</div>
-	    </div>
+		</div>
 	</div>
     );
 }

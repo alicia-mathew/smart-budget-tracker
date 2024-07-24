@@ -54,7 +54,9 @@ function Groups() {
             <header className="header">
                 <h1>Group Management</h1>
             </header>
-            <h3 className="intro" style={{ textAlign: 'center' }}>View all info regarding your group enrollment.</h3>
+            <div className="intro-container">
+                <h3 className="intro">Take a look at your group enrollment, manage group permissions, create a new group, or join an existing one!</h3>
+            </div>
             <div className="groups-list">
                 <div className="table-row">
                     <div className="table-header">Group ID</div>
