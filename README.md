@@ -1,7 +1,7 @@
 # Smart Budget Tracker Application
 
-_**### University of Waterloo - CS 338 Spring 2024 - Final Project**
-_
+_**### University of Waterloo - CS 338 Spring 2024 - Final Project**_
+
 **Description of app**: We are building a personal budgeting application that assists people in managing personal finances. Some of the app's features include an expense overview page where users can select a daily or monthly view, groups where users can enroll to track shared expenses together, recommendations on optimizing their spending, and recurring payment tracking to help users plan their monthly expenditures. The main users of the app are individuals and groups of individuals (families, students,  adults, etc.) who want to track their personal/group expenses. The dataset will be created by us, catering to the unique features provided in the application. The administrators of the database are the developers of the application.
 
 **Description of Platform**: Our application will run on a local machine, enabling users to interact with a locally hosted web application. The app is designed to be primarily desktop-based, rather than mobile-based, providing a more comprehensive user experience. Our technology stack includes React, Flask, HTML, CSS, and JavaScript, with MySQL for our database. The live app will be hosted on a webpage instead of a command-line interface. 
