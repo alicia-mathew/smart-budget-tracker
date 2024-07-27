@@ -1,10 +1,12 @@
 # Smart Budget Tracker Application
 
-_**(University of Waterloo | CS 338 Spring 2024 | Final Project)**_
+*(University of Waterloo | CS 338 Spring 2024 | Final Project)*
 
-**Description of app**: We are building a personal budgeting application that assists people in managing personal finances. Some of the app's features include an expense overview page where users can select a daily or monthly view, groups where users can enroll to track shared expenses together, recommendations on optimizing their spending, and recurring payment tracking to help users plan their monthly expenditures. The main users of the app are individuals and groups of individuals (families, students,  adults, etc.) who want to track their personal/group expenses. The dataset will be created by us, catering to the unique features provided in the application. The administrators of the database are the developers of the application.
+**Application Overview**
+Our final project is a personal budgeting application designed to help users effectively manage their finances. Key features of the application include a budget logger, expense management tools, spending pattern visualizations, and smart spending optimization suggestions. Additionally, the application supports a group enrollment feature, allowing users to track shared expenses conveniently. The primary users of this app are individuals and groups, such as families, students, and roommates, who seek a robust platform for managing personal or collective financial activities. To demonstrate the functionality of the app, we will create a production dataset as the principal administrators and developers.
 
-**Description of Platform**: Our application will run on a local machine, enabling users to interact with a locally hosted web application. The app is designed to be primarily desktop-based, rather than mobile-based, providing a more comprehensive user experience. Our technology stack includes React, Flask, HTML, CSS, and JavaScript, with SQLite3 for our database. The live app will be hosted on a webpage instead of a command-line interface. 
+**System Support**
+The application is hosted locally and accessed through a web interface, to provide a desktop-based user-friendly experience rather than mobile use. Our technology stack consists of Flask and React for dynamic web development, with HTML, CSS, and JavaScript enhancing the front end. For database management, we utilize SQLite3, ensuring scalable user data handling.
 
 **Main Features**:
 1. Budget Goal Management: Sheet where users can view, add, edit, and delete their monthly budget goals for any category they want.
