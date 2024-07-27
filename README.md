@@ -2,10 +2,10 @@
 
 *(University of Waterloo | CS 338 Spring 2024 | Final Project)*
 
-**Application Overview**
+**Application Overview**:
 Our final project is a personal budgeting application designed to help users effectively manage their finances. Key features of the application include a budget logger, expense management tools, spending pattern visualizations, and smart spending optimization suggestions. Additionally, the application supports a group enrollment feature, allowing users to track shared expenses conveniently. The primary users of this app are individuals and groups, such as families, students, and roommates, who seek a robust platform for managing personal or collective financial activities. To demonstrate the functionality of the app, we will create a production dataset as the principal administrators and developers.
 
-**System Support**
+**System Support**:
 The application is hosted locally and accessed through a web interface, to provide a desktop-based user-friendly experience rather than mobile use. Our technology stack consists of Flask and React for dynamic web development, with HTML, CSS, and JavaScript enhancing the front end. For database management, we utilize SQLite3, ensuring scalable user data handling.
 
 **Main Features**:
